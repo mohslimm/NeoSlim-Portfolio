@@ -5,10 +5,10 @@ import { Github, Linkedin, Twitter, Mail, ArrowUpRight, Heart } from 'lucide-rea
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const socialLinks = [
-  { icon: Github, href: 'https://github.com', label: 'GitHub' },
-  { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
-  { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
-  { icon: Mail, href: 'mailto:contact@neoslim.agency', label: 'Email' },
+  { icon: Github, href: 'https://github.com/mohslimm', label: 'GitHub' },
+  { icon: Linkedin, href: 'https://www.linkedin.com/in/mohamed-slimani-', label: 'LinkedIn' },
+  { icon: Twitter, href: 'https://x.com/mohsliimm', label: 'Twitter' },
+  { icon: Mail, href: 'mailto:neoslim.dev@gmail.com', label: 'Email' },
 ];
 
 const navLinks = [
@@ -68,12 +68,12 @@ export function Footer() {
               Vous avez un projet en tête ? Discutons de la façon dont je peux vous aider à le réaliser.
             </p>
             <motion.a
-              href="mailto:contact@neoslim.agency"
+              href="mailto:neoslim.dev@gmail.com"
               className="inline-flex items-center gap-3 px-8 py-4 bg-[#C5864E] text-[#0A0A0B] rounded-full font-medium text-lg group"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span>contact@neoslim.agency</span>
+              <span>neoslim.dev@gmail.com</span>
               <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </motion.a>
           </motion.div>
@@ -165,15 +165,15 @@ export function Footer() {
                   <div>
                     <p className="text-sm text-[#A1A1AA] mb-1">Email</p>
                     <a
-                      href="mailto:contact@neoslim.agency"
+                      href="mailto:neoslim.dev@gmail.com"
                       className="text-[#F2F2F2] hover:text-[#C5864E] transition-colors"
                     >
-                      contact@neoslim.agency
+                      neoslim.dev@gmail.com
                     </a>
                   </div>
                   <div>
                     <p className="text-sm text-[#A1A1AA] mb-1">Localisation</p>
-                    <p className="text-[#F2F2F2]">Paris, France</p>
+                    <p className="text-[#F2F2F2]">Montréal, Québec</p>
                   </div>
                   <div>
                     <p className="text-sm text-[#A1A1AA] mb-1">Disponibilité</p>
@@ -200,7 +200,7 @@ export function Footer() {
                 © {new Date().getFullYear()} NeoSlim Agency. {t('footer.rights') as string}
               </p>
               <p className="text-sm text-[#A1A1AA] flex items-center gap-1">
-                Fait avec <Heart className="w-4 h-4 text-[#C5864E] fill-[#C5864E]" /> à Paris
+                Fait avec <Heart className="w-4 h-4 text-[#C5864E] fill-[#C5864E]" /> à Montréal
               </p>
             </div>
           </div>
