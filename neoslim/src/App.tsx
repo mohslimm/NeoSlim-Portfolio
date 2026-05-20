@@ -9,10 +9,13 @@ import { Skills } from './sections/Skills';
 import { DataViz } from './sections/DataViz';
 import { Portfolio } from './sections/Portfolio';
 import { Footer } from './sections/Footer';
-import { AdminLogin } from './sections/AdminLogin';
-import { AdminDashboard } from './sections/AdminDashboard';
-import { ProjectsPage } from './sections/ProjectsPage';
+import { lazy, Suspense } from 'react';
 import './App.css';
+
+// Lazy load heavy page views to optimize initial bundle size & load speed
+const ProjectsPage = lazy(() => import('./sections/ProjectsPage').then(module => ({ default: module.ProjectsPage })));
+const AdminLogin = lazy(() => import('./sections/AdminLogin').then(module => ({ default: module.AdminLogin })));
+const AdminDashboard = lazy(() => import('./sections/AdminDashboard').then(module => ({ default: module.AdminDashboard })));
 
 // Grain Overlay Component
 function GrainOverlay() {
@@ -182,12 +185,12 @@ function AppContent() {
 function App() {
   useEffect(() => {
     // Set document title and meta
-    document.title = 'NeoSlim Agency | Mohamed Slimani - Développeur Créatif & UI/UX Designer';
+    document.title = 'Mohamed Slimani | Senior Full-Stack Developer';
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(
         'content',
-        'Portfolio de Mohamed Slimani - Développeur Créatif & UI/UX Designer spécialisé dans les expériences digitales qui défient la gravité.'
+        'Mohamed Slimani - Senior Full-Stack Developer & Founder of Stepping Stones Agency. Specializing in high-performance MERN & Next.js architectures, secure backend services, and premium UI/UX design.'
       );
     }
   }, []);
@@ -198,7 +201,13 @@ function App() {
         <GrainOverlay />
         <ScrollProgress />
         <CustomCursor />
-        <AppContent />
+        <Suspense fallback={
+          <div className="min-h-screen bg-[#060610] flex items-center justify-center">
+            <div className="w-10 h-10 border border-[#c5a059]/30 border-t-[#c5a059] rounded-full animate-spin" />
+          </div>
+        }>
+          <AppContent />
+        </Suspense>
       </AuthProvider>
     </I18nProvider>
   );

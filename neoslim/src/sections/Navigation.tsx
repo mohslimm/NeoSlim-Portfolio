@@ -43,10 +43,16 @@ export function Navigation() {
             {/* Logo */}
             <motion.a
               href="#hero"
-              className="font-serif text-2xl font-bold text-[#F2F2F2]"
+              className="flex items-center"
               whileHover={{ scale: 1.05 }}
             >
-              Neo<span className="text-[#C5864E]">Slim</span>
+              <motion.img
+                src="/logo.png"
+                alt="NeoSlim Logo"
+                className="h-16 w-auto object-contain"
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              />
             </motion.a>
 
             {/* Desktop Navigation */}

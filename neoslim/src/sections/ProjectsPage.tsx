@@ -32,6 +32,8 @@ interface UnifiedProject {
   githubUrl?: string;
   demoUrl?: string;
   gallery?: string[];
+  tagline?: string;
+  keyAchievement?: string;
 }
 
 const projectsMetadata: Record<string, {
@@ -41,7 +43,66 @@ const projectsMetadata: Record<string, {
   githubUrl?: string;
   demoUrl?: string;
   gallery?: string[];
+  tagline?: { fr: string; en: string };
+  keyAchievement?: { fr: string; en: string };
 }> = {
+  '7': {
+    year: '2024',
+    tags: ['n8n / Make', 'LLM Routing', 'React / Next.js', 'Node.js', 'BullMQ', 'Redis', 'Python'],
+    tagline: {
+      fr: "Plateforme de Sales Intelligence augmentée par l'IA pour automatiser la prospection de données à grande échelle.",
+      en: "AI-augmented Sales Intelligence platform designed to automate lead generation and sales data processing at scale."
+    },
+    fullDescription: {
+      fr: "Ingénierie IA avancée intégrant un routeur de requêtes LLM dynamique pour optimiser les coûts et le temps de réponse. L'architecture repose sur des systèmes d'agents autonomes et des pipelines d'automatisation asynchrones via n8n/Make connectés par APIs, assurant un traitement résilient et sans friction des données de prospection.",
+      en: "Advanced AI engineering incorporating a dynamic LLM query router to minimize costs and latency. The architecture leverages autonomous agents and asynchronous automation pipelines via API-interconnected n8n/Make systems, ensuring resilient, zero-friction sales data processing."
+    },
+    keyAchievement: {
+      fr: "Automatisation Autonome & Routage Intelligent",
+      en: "Autonomous Automation & Intelligent Routing"
+    },
+    githubUrl: 'https://github.com/mohslimm/stonelink',
+    demoUrl: 'https://stonelink.neoslim.online',
+    gallery: ['/projects/nebula.jpg']
+  },
+  '8': {
+    year: '2024',
+    tags: ['React', 'NestJS', 'MongoDB', 'GraphQL', 'Microservices', 'Docker', 'Kubernetes'],
+    tagline: {
+      fr: "ERP d'entreprise modulaire et hautement scalable conçu pour les flux d'activités complexes.",
+      en: "Highly scalable and modular enterprise ERP designed for complex multi-sector business workflows."
+    },
+    fullDescription: {
+      fr: "Architecture logicielle robuste basée sur des modules et plugins indépendants, permettant une adaptabilité multi-sectorielle sans surcharge. La gestion des données repose sur des schémas MongoDB complexes optimisés pour le reporting analytique temps réel et l'optimisation des processus back-office.",
+      en: "Robust software architecture utilizing independent modules and plugins to provide multi-sector adaptability without bloat. Powered by complex MongoDB schema designs optimized for real-time analytical reporting and back-office process speed."
+    },
+    keyAchievement: {
+      fr: "Architecture Modulaire & Scalabilité Microservices",
+      en: "Modular Architecture & Microservices Scalability"
+    },
+    githubUrl: 'https://github.com/mohslimm/nexus-horizon-erp',
+    demoUrl: 'https://nexus.neoslim.online',
+    gallery: ['/projects/quantum.jpg']
+  },
+  '9': {
+    year: '2023',
+    tags: ['Next.js', 'Figma', 'Lighthouse 100%', 'OWASP Security', 'Tailwind CSS', 'Framer Motion', 'TypeScript'],
+    tagline: {
+      fr: "Plateforme de réservation et courtage de yachts de luxe avec UI/UX haut de gamme et performances optimales.",
+      en: "Luxury yacht charter and brokerage platform featuring premium UI/UX and industry-leading performance."
+    },
+    fullDescription: {
+      fr: "Audit technique approfondi et développement d'un prototype d'exception appliquant les standards du \"Quiet Luxury\" et du glassmorphism. Optimisation drastique des performances front-end pour atteindre un score Lighthouse de 100% (chargement sub-seconde) et implémentation de protocoles de sécurité avancés pour la protection des données clients et des transactions.",
+      en: "In-depth technical audit and prototype development applying \"Quiet Luxury\" aesthetics and glassmorphic UI. Engineered for sub-second page loads, reaching a 100% Lighthouse performance score, combined with hardened security layers to protect transactions and customer files."
+    },
+    keyAchievement: {
+      fr: "Score Lighthouse 100% & Sécurité Renforcée",
+      en: "100% Lighthouse Score & Hardened Security"
+    },
+    githubUrl: 'https://github.com/mohslimm/vespera-luxury-brokerage',
+    demoUrl: 'https://vespera.neoslim.online',
+    gallery: ['/projects/aurora.jpg']
+  },
   '1': {
     year: '2024',
     tags: ['React', 'D3.js', 'Python', 'FastAPI', 'Tailwind'],
@@ -111,6 +172,30 @@ const projectsMetadata: Record<string, {
 };
 
 const fallbackProjects: ProjectData[] = [
+  {
+    id: '7',
+    title: 'StoneLink',
+    description: 'Plateforme SaaS d\'intelligence commerciale augmentée par l\'IA avec routage LLM dynamique et workflows asynchrones.',
+    image: '/projects/nebula.jpg',
+    category: 'development',
+    antigravity_score: 99,
+  },
+  {
+    id: '8',
+    title: 'Nexus Horizon ERP',
+    description: 'Système ERP modulaire, scalable et multi-sectoriel conçu pour la gestion multi-sectorielle complexe sous microservices.',
+    image: '/projects/quantum.jpg',
+    category: 'productivity',
+    antigravity_score: 98,
+  },
+  {
+    id: '9',
+    title: 'Tropicalboat Luxury Yacht Charters',
+    description: 'Audit technique complet et prototype haut de gamme de plateforme de courtage et réservation de yachts de luxe.',
+    image: '/projects/aurora.jpg',
+    category: 'design',
+    antigravity_score: 99,
+  },
   {
     id: '1',
     title: 'Nebula Dashboard',
@@ -236,6 +321,8 @@ export function ProjectsPage() {
         githubUrl: meta.githubUrl,
         demoUrl: meta.demoUrl,
         gallery: meta.gallery,
+        tagline: meta.tagline ? (language === 'fr' ? meta.tagline.fr : meta.tagline.en) : undefined,
+        keyAchievement: meta.keyAchievement ? (language === 'fr' ? meta.keyAchievement.fr : meta.keyAchievement.en) : undefined,
       };
     });
   };
@@ -250,9 +337,9 @@ export function ProjectsPage() {
 
   const filters: { key: typeof activeFilter; label: string }[] = [
     { key: 'all', label: language === 'fr' ? 'Tous' : 'All' },
-    { key: 'design', label: language === 'fr' ? 'Design' : 'Design' },
-    { key: 'development', label: language === 'fr' ? 'Développement' : 'Development' },
-    { key: 'productivity', label: language === 'fr' ? 'Productivité' : 'Productivity' },
+    { key: 'design', label: language === 'fr' ? 'Design & Audits' : 'Design & Audits' },
+    { key: 'development', label: language === 'fr' ? 'Développement SaaS' : 'SaaS Development' },
+    { key: 'productivity', label: language === 'fr' ? 'Systèmes ERP' : 'ERP Systems' },
   ];
 
   // Close modal callback
@@ -517,7 +604,7 @@ export function ProjectsPage() {
           >
             {/* Modal Container */}
             <motion.div
-              className="glass-card rounded-3xl w-full max-w-4xl border border-white/10 overflow-hidden relative shadow-2xl my-8"
+              className="glass-card rounded-3xl w-full max-w-5xl border border-white/10 overflow-hidden relative shadow-2xl my-8"
               initial={{ scale: 0.95, y: 30, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.95, y: 30, opacity: 0 }}
@@ -527,7 +614,7 @@ export function ProjectsPage() {
               {/* Close Button overlay */}
               <button
                 onClick={handleCloseModal}
-                className="absolute top-6 right-6 z-30 p-2.5 rounded-full bg-black/60 border border-white/10 hover:bg-black hover:border-[#C5864E]/40 text-[#A1A1AA] hover:text-[#F2F2F2] transition-all"
+                className="absolute top-6 right-6 md:top-8 md:right-8 z-30 p-2.5 rounded-full bg-black/60 border border-white/10 hover:bg-black hover:border-[#C5864E]/40 text-[#A1A1AA] hover:text-[#F2F2F2] transition-all"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -557,7 +644,7 @@ export function ProjectsPage() {
                 <div className="md:col-span-7 p-8 md:p-10 flex flex-col justify-between max-h-[85vh] md:max-h-none overflow-y-auto">
                   <div>
                     {/* Header score */}
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mb-4 pr-12 md:pr-16">
                       <span className="font-mono text-xs text-[#C5864E] uppercase tracking-wider block">
                         {activeProject.category}
                       </span>
@@ -569,9 +656,15 @@ export function ProjectsPage() {
                       </div>
                     </div>
 
-                    <h2 className="font-serif text-3xl md:text-4xl font-bold text-[#F2F2F2] mb-6">
+                    <h2 className="font-serif text-3xl md:text-4xl font-bold text-[#F2F2F2] mb-3 pr-12 md:pr-16">
                       {activeProject.title}
                     </h2>
+
+                    {activeProject.tagline && (
+                      <p className="text-[#C5864E] text-sm md:text-base font-serif italic mb-6 leading-relaxed">
+                        {activeProject.tagline}
+                      </p>
+                    )}
 
                     <div className="space-y-6 mb-8">
                       <div>
@@ -580,6 +673,20 @@ export function ProjectsPage() {
                           {activeProject.fullDescription}
                         </p>
                       </div>
+
+                      {activeProject.keyAchievement && (
+                        <div className="p-4 rounded-xl bg-[#C5864E]/5 border border-[#C5864E]/20 flex items-start gap-3">
+                          <Star className="w-4 h-4 text-[#C5864E] shrink-0 mt-0.5" />
+                          <div>
+                            <h5 className="text-[10px] uppercase font-mono text-[#C5864E] tracking-wider mb-1">
+                              {language === 'fr' ? 'Réalisation Clé' : 'Key Achievement'}
+                            </h5>
+                            <p className="text-[#F2F2F2] text-xs font-semibold">
+                              {activeProject.keyAchievement}
+                            </p>
+                          </div>
+                        </div>
+                      )}
 
                       {/* Technical details / Stack */}
                       <div>
@@ -600,15 +707,6 @@ export function ProjectsPage() {
                     </div>
                   </div>
 
-                  {/* Actions / CTA Links */}
-                  <div className="border-t border-[#F2F2F2]/5 pt-6 flex flex-wrap gap-4 items-center justify-end">
-                    <button
-                      onClick={handleCloseModal}
-                      className="px-4 py-2 text-xs text-[#A1A1AA] hover:text-[#F2F2F2] hover:underline transition-all font-mono"
-                    >
-                      {language === 'fr' ? '← Fermer la vue' : '← Close view'}
-                    </button>
-                  </div>
                 </div>
               </div>
             </motion.div>

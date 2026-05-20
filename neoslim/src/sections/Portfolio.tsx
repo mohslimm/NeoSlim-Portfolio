@@ -12,7 +12,8 @@ type Category = 'all' | 'design' | 'development' | 'productivity';
 interface Project {
   id: string;
   title: string;
-  description: string;
+  descriptionFr: string;
+  descriptionEn: string;
   image: string;
   category: Exclude<Category, 'all'>;
   antigravityScore: number;
@@ -22,9 +23,43 @@ interface Project {
 
 const projects: Project[] = [
   {
+    id: '7',
+    title: 'StoneLink',
+    descriptionFr: 'Plateforme SaaS d\'intelligence commerciale augmentée par l\'IA avec routage LLM dynamique et workflows asynchrones.',
+    descriptionEn: 'AI-augmented sales intelligence SaaS platform featuring dynamic LLM routing and complex asynchronous workflows.',
+    image: '/projects/nebula.jpg',
+    category: 'development',
+    antigravityScore: 99,
+    year: '2024',
+    tags: ['React', 'Next.js', 'Node.js', 'LLM Routing', 'BullMQ', 'Redis'],
+  },
+  {
+    id: '8',
+    title: 'Nexus Horizon ERP',
+    descriptionFr: 'Système ERP modulaire, scalable et multi-sectoriel conçu pour la gestion multi-sectorielle complexe sous microservices.',
+    descriptionEn: 'Modular, scalable, and multi-sector ERP system built on microservices for complex management.',
+    image: '/projects/quantum.jpg',
+    category: 'productivity',
+    antigravityScore: 98,
+    year: '2024',
+    tags: ['React', 'NestJS', 'MongoDB', 'Docker', 'Kubernetes', 'GraphQL'],
+  },
+  {
+    id: '9',
+    title: 'Tropicalboat Luxury Yacht Charters',
+    descriptionFr: 'Audit technique complet et prototype haut de gamme de plateforme de courtage et réservation de yachts de luxe.',
+    descriptionEn: 'Technical audit and high-end prototype of a luxury yacht brokerage and reservation platform.',
+    image: '/projects/aurora.jpg',
+    category: 'design',
+    antigravityScore: 99,
+    year: '2023',
+    tags: ['Next.js', 'Figma', 'Lighthouse 100%', 'OWASP Security', 'TypeScript'],
+  },
+  {
     id: '1',
     title: 'Nebula Dashboard',
-    description: 'Tableau de bord analytics avec visualisation de données temps réel et IA prédictive.',
+    descriptionFr: 'Tableau de bord analytics avec visualisation de données temps réel et IA prédictive.',
+    descriptionEn: 'Analytics dashboard featuring real-time data visualization and predictive AI.',
     image: '/projects/nebula.jpg',
     category: 'development',
     antigravityScore: 98,
@@ -34,7 +69,8 @@ const projects: Project[] = [
   {
     id: '2',
     title: 'Aurora Design System',
-    description: 'Système de design complet avec 200+ composants et documentation interactive.',
+    descriptionFr: 'Système de design complet avec 200+ composants et documentation interactive.',
+    descriptionEn: 'Comprehensive design system featuring 200+ components and interactive documentation.',
     image: '/projects/aurora.jpg',
     category: 'design',
     antigravityScore: 99,
@@ -44,7 +80,8 @@ const projects: Project[] = [
   {
     id: '3',
     title: 'Quantum Flow',
-    description: 'Application de productivité avec automatisation intelligente des workflows.',
+    descriptionFr: 'Application de productivité avec automatisation intelligente des workflows.',
+    descriptionEn: 'Productivity application with intelligent workflow automation.',
     image: '/projects/quantum.jpg',
     category: 'productivity',
     antigravityScore: 97,
@@ -54,7 +91,8 @@ const projects: Project[] = [
   {
     id: '4',
     title: 'Stellar E-commerce',
-    description: 'Plateforme e-commerce headless avec expérience 3D immersive.',
+    descriptionFr: 'Plateforme e-commerce headless avec expérience 3D immersive.',
+    descriptionEn: 'Headless e-commerce platform with immersive 3D experience.',
     image: '/projects/stellar.jpg',
     category: 'development',
     antigravityScore: 96,
@@ -64,7 +102,8 @@ const projects: Project[] = [
   {
     id: '5',
     title: 'Zenith Branding',
-    description: 'Identité visuelle complète pour une startup fintech innovante.',
+    descriptionFr: 'Identité visuelle complète pour une startup fintech innovante.',
+    descriptionEn: 'Complete visual identity for an innovative fintech startup.',
     image: '/projects/zenith.jpg',
     category: 'design',
     antigravityScore: 98,
@@ -74,7 +113,8 @@ const projects: Project[] = [
   {
     id: '6',
     title: 'Orbit CRM',
-    description: 'CRM intelligent avec intégration IA pour la gestion client.',
+    descriptionFr: 'CRM intelligent avec intégration IA pour la gestion client.',
+    descriptionEn: 'Intelligent CRM with AI integration for customer management.',
     image: '/projects/orbit.jpg',
     category: 'productivity',
     antigravityScore: 95,
@@ -85,13 +125,13 @@ const projects: Project[] = [
 
 const filters: { key: Category; label: string }[] = [
   { key: 'all', label: 'Tous' },
-  { key: 'design', label: 'Design' },
-  { key: 'development', label: 'Développement' },
-  { key: 'productivity', label: 'Productivité' },
+  { key: 'design', label: 'Design & Audits' },
+  { key: 'development', label: 'Développement SaaS' },
+  { key: 'productivity', label: 'Systèmes ERP' },
 ];
 
 export function Portfolio() {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [activeFilter, setActiveFilter] = useState<Category>('all');
 
   const filteredProjects =
@@ -243,7 +283,7 @@ export function Portfolio() {
                       {project.title}
                     </h3>
                     <p className="text-[#A1A1AA] text-sm mb-4 flex-1">
-                      {project.description}
+                      {language === 'fr' ? project.descriptionFr : project.descriptionEn}
                     </p>
 
                     {/* Tags */}

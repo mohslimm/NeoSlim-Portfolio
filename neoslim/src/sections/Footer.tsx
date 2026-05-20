@@ -90,11 +90,11 @@ export function Footer() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <h3 className="font-serif text-3xl font-bold text-[#F2F2F2] mb-4">
-                  Neo<span className="text-[#C5864E]">Slim</span>
+                <h3 className="flex items-center mb-4">
+                  <img src="/logo.png" alt="NeoSlim Logo" className="h-16 w-auto object-contain" />
                 </h3>
                 <p className="text-[#A1A1AA] text-sm leading-relaxed mb-6">
-                  Développeur Créatif & UI/UX Designer spécialisé dans la création d'expériences digitales qui défient la gravité.
+                  Senior Full-Stack Developer spécialisé dans les architectures haute performance, la sécurité et le design "Quiet Luxury".
                 </p>
                 <div className="flex items-center gap-3">
                   {socialLinks.map((social, index) => {
@@ -197,7 +197,7 @@ export function Footer() {
           <div className="max-w-7xl mx-auto px-6 py-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <p className="text-sm text-[#A1A1AA] flex items-center gap-1">
-                © {new Date().getFullYear()} NeoSlim Agency. {t('footer.rights') as string}
+                © {new Date().getFullYear()} Mohamed Slimani. {t('footer.rights') as string}
               </p>
               <p className="text-sm text-[#A1A1AA] flex items-center gap-1">
                 Fait avec <Heart className="w-4 h-4 text-[#C5864E] fill-[#C5864E]" /> à Montréal
