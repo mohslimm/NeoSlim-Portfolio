@@ -17,6 +17,15 @@ const ProjectsPage = lazy(() => import('./sections/ProjectsPage').then(module =>
 const AdminLogin = lazy(() => import('./sections/AdminLogin').then(module => ({ default: module.AdminLogin })));
 const AdminDashboard = lazy(() => import('./sections/AdminDashboard').then(module => ({ default: module.AdminDashboard })));
 
+// Preload ProjectsPage chunk on first hover — eliminates click delay
+let projectsPreloaded = false;
+export function preloadProjectsPage() {
+  if (!projectsPreloaded) {
+    projectsPreloaded = true;
+    import('./sections/ProjectsPage');
+  }
+}
+
 // Grain Overlay Component
 function GrainOverlay() {
   return <div className="grain-overlay" />;
