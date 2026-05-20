@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from '../contexts/I18nContext';
 import { ExternalLink, Star, Filter, ArrowUpRight } from 'lucide-react';
 
+const MotionLink = motion(Link);
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 type Category = 'all' | 'design' | 'development' | 'productivity';
@@ -257,14 +259,13 @@ export function Portfolio() {
                     </div>
 
                     {/* View Project Link */}
-                    <motion.a
-                      href="#"
-                      className="inline-flex items-center gap-2 text-sm text-[#C5864E] font-medium group/link"
-                      whileHover={{ x: 4 }}
+                    <Link
+                      to={`/projects/${project.id}`}
+                      className="inline-flex items-center gap-2 text-sm text-[#C5864E] font-medium group/link hover:underline"
                     >
                       <span>{t('portfolio.viewProject') as string}</span>
                       <ArrowUpRight className="w-4 h-4 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform" />
-                    </motion.a>
+                    </Link>
                   </div>
                 </div>
               </motion.article>
@@ -280,15 +281,15 @@ export function Portfolio() {
           viewport={{ once: true }}
           transition={{ delay: 0.5, duration: 1 }}
         >
-          <motion.a
-            href="#"
+          <MotionLink
+            to="/projects"
             className="inline-flex items-center gap-3 px-8 py-4 glass-card rounded-full text-[#F2F2F2] hover:border-[#C5864E]/50 transition-colors group"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <span className="font-medium">Voir tous les projets</span>
             <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </motion.a>
+          </MotionLink>
         </motion.div>
       </div>
     </section>

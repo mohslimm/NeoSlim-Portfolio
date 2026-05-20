@@ -11,6 +11,7 @@ import { Portfolio } from './sections/Portfolio';
 import { Footer } from './sections/Footer';
 import { AdminLogin } from './sections/AdminLogin';
 import { AdminDashboard } from './sections/AdminDashboard';
+import { ProjectsPage } from './sections/ProjectsPage';
 import './App.css';
 
 // Grain Overlay Component
@@ -169,6 +170,8 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/admin" element={<ProtectedAdminRoute />} />
+        <Route path="/projects" element={<ProjectsPage />} />
+        <Route path="/projects/:id" element={<ProjectsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

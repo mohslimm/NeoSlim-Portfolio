@@ -51,7 +51,6 @@ const translations: Record<Language, Translations> = {
         seo: 'SEO',
       },
     },
-    // Portfolio
     portfolio: {
       title: 'Portfolio',
       subtitle: 'Sélection',
@@ -64,6 +63,12 @@ const translations: Record<Language, Translations> = {
       },
       antigravityScore: 'Score Antigravity',
       viewProject: 'Voir le projet',
+      backToHome: 'Retour à l’accueil',
+      allProjects: 'Tous les projets',
+      techDetails: 'Détails techniques',
+      visitSite: 'Visiter le site',
+      viewCode: 'Voir le code',
+      noProjects: 'Aucun projet trouvé',
     },
     // Admin
     admin: {
@@ -132,7 +137,6 @@ const translations: Record<Language, Translations> = {
         seo: 'SEO',
       },
     },
-    // Portfolio
     portfolio: {
       title: 'Featured',
       subtitle: 'Works',
@@ -145,6 +149,12 @@ const translations: Record<Language, Translations> = {
       },
       antigravityScore: 'Antigravity Score',
       viewProject: 'View project',
+      backToHome: 'Back to Home',
+      allProjects: 'All Projects',
+      techDetails: 'Technical details',
+      visitSite: 'Visit site',
+      viewCode: 'View code',
+      noProjects: 'No projects found',
     },
     // Admin
     admin: {
