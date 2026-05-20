@@ -400,8 +400,14 @@ export function ProjectsPage() {
           </Link>
 
           <div className="flex items-center gap-6">
-            <Link to="/" className="font-serif text-2xl font-bold text-[#F2F2F2] hover:opacity-80 transition-opacity">
-              Neo<span className="text-[#C5864E]">Slim</span>
+            <Link to="/" className="flex items-center">
+              <motion.img
+                src="./logo.png"
+                alt="NeoSlim Logo"
+                className="h-16 w-auto object-contain"
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              />
             </Link>
 
             <motion.button
