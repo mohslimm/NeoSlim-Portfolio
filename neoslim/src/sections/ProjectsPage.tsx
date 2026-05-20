@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ExternalLink, Star, Filter, ArrowUpRight, Github, X, Globe } from 'lucide-react';
+import { ArrowLeft, Star, Filter, ArrowUpRight, X, Globe } from 'lucide-react';
 import { useI18n } from '../contexts/I18nContext';
 import { supabase } from '../lib/supabase';
 import { Skeleton } from '../components/ui/skeleton';
@@ -177,27 +177,35 @@ export function ProjectsPage() {
   }, []);
 
   const loadProjects = async () => {
+    setIsLoading(true);
+    
+    // 2.5 second timeout to prevent getting stuck in skeleton loading state
+    const timeoutPromise = new Promise<{ data: null; error: Error }>((_, reject) =>
+      setTimeout(() => reject(new Error('Supabase request timed out')), 2500)
+    );
+
     try {
-      setIsLoading(true);
-      const { data, error } = await supabase
+      const fetchPromise = supabase
         .from('projects')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      if (data && data.length > 0) {
-        setRawProjects(data);
+      const response = await Promise.race([
+        fetchPromise,
+        timeoutPromise
+      ]) as { data: any[] | null; error: any };
+
+      if (response.error) throw response.error;
+      if (response.data && response.data.length > 0) {
+        setRawProjects(response.data);
       } else {
         setRawProjects(fallbackProjects);
       }
     } catch (error) {
-      console.error('Error fetching projects from Supabase:', error);
+      console.error('Error loading projects or connection timed out:', error);
       setRawProjects(fallbackProjects);
     } finally {
-      // Small simulated delay for loading skeleton visuals
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 600);
+      setIsLoading(false);
     }
   };
 
@@ -593,32 +601,7 @@ export function ProjectsPage() {
                   </div>
 
                   {/* Actions / CTA Links */}
-                  <div className="border-t border-[#F2F2F2]/5 pt-6 flex flex-wrap gap-4 items-center justify-between">
-                    <div className="flex flex-wrap gap-3">
-                      {activeProject.demoUrl && (
-                        <a
-                          href={activeProject.demoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#C5864E] text-[#0A0A0B] font-semibold text-sm hover:bg-[#C5864E]/90 transition-colors group"
-                        >
-                          <span>{t('portfolio.visitSite') as string}</span>
-                          <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                        </a>
-                      )}
-                      {activeProject.githubUrl && (
-                        <a
-                          href={activeProject.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#161618] border border-white/5 text-[#F2F2F2] font-semibold text-sm hover:border-[#C5864E]/40 hover:bg-[#202022] transition-all"
-                        >
-                          <Github className="w-4 h-4" />
-                          <span>{t('portfolio.viewCode') as string}</span>
-                        </a>
-                      )}
-                    </div>
-
+                  <div className="border-t border-[#F2F2F2]/5 pt-6 flex flex-wrap gap-4 items-center justify-end">
                     <button
                       onClick={handleCloseModal}
                       className="px-4 py-2 text-xs text-[#A1A1AA] hover:text-[#F2F2F2] hover:underline transition-all font-mono"
