@@ -91,7 +91,7 @@ export function Footer() {
                 transition={{ duration: 0.8 }}
               >
                 <h3 className="flex items-center mb-4">
-                  <img src="/logo.png" alt="NeoSlim Logo" className="h-16 w-auto object-contain" />
+                  <img src="./logo.png" alt="NeoSlim Logo" className="h-16 w-auto object-contain" />
                 </h3>
                 <p className="text-[#A1A1AA] text-sm leading-relaxed mb-6">
                   Senior Full-Stack Developer spécialisé dans les architectures haute performance, la sécurité et le design "Quiet Luxury".

@@ -47,7 +47,7 @@ export function Navigation() {
               whileHover={{ scale: 1.05 }}
             >
               <motion.img
-                src="/logo.png"
+                src="./logo.png"
                 alt="NeoSlim Logo"
                 className="h-16 w-auto object-contain"
                 whileHover={{ rotate: 360 }}
