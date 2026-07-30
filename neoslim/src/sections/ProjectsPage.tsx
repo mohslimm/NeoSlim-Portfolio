@@ -100,7 +100,7 @@ const projectsMetadata: Record<string, {
       en: "100% Lighthouse Score & Hardened Security"
     },
     githubUrl: 'https://github.com/mohslimm/vespera-luxury-brokerage',
-    demoUrl: 'https://vespera.neoslim.online',
+    demoUrl: 'https://tropical-boat.vercel.app/',
     gallery: ['/projects/aurora.jpg']
   },
   '1': {
@@ -712,6 +712,34 @@ export function ProjectsPage() {
                       </div>
                     </div>
                   </div>
+
+                  {/* CTA Buttons */}
+                  {(activeProject.demoUrl || activeProject.githubUrl) && (
+                    <div className="flex flex-wrap gap-3 pt-2">
+                      {activeProject.demoUrl && (
+                        <a
+                          href={activeProject.demoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#C5864E] hover:bg-[#d4974e] text-[#0A0A0B] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                          <ArrowUpRight className="w-4 h-4" />
+                          {language === 'fr' ? 'Voir le projet live' : 'View Live Project'}
+                        </a>
+                      )}
+                      {activeProject.githubUrl && (
+                        <a
+                          href={activeProject.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium border border-[#F2F2F2]/10 text-[#A1A1AA] hover:text-[#F2F2F2] hover:border-[#C5864E]/40 transition-all duration-200"
+                        >
+                          <Globe className="w-4 h-4" />
+                          GitHub
+                        </a>
+                      )}
+                    </div>
+                  )}
 
                 </div>
               </div>
