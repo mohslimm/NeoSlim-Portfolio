@@ -11,8 +11,10 @@ const translations: Record<Language, Translations> = {
     // Navigation
     nav: {
       home: 'Accueil',
+      showcase3d: 'Matrice 3D',
       skills: 'Compétences',
       portfolio: 'Portfolio',
+      niches: 'Pack Niches',
       contact: 'Contact',
       admin: 'Admin',
     },
@@ -60,6 +62,7 @@ const translations: Record<Language, Translations> = {
         design: 'Design & Audits',
         development: 'Développement SaaS',
         productivity: 'Systèmes ERP',
+        niches: 'Pack Niches Stepping Stones',
       },
       antigravityScore: 'Score Antigravity',
       viewProject: 'Voir le projet',
@@ -69,6 +72,33 @@ const translations: Record<Language, Translations> = {
       visitSite: 'Visiter le site',
       viewCode: 'Voir le code',
       noProjects: 'Aucun projet trouvé',
+    },
+    // Niche Pack
+    nichePack: {
+      badge: 'COLLECTION HAUTE QUALITÉ — STEPPING STONES',
+      title: 'Pack Websites Niches',
+      highlight: 'Haute Conversion',
+      description: '13 plateformes web ultra-spécialisées développées sur-mesure pour des secteurs à haute valeur ajoutée : Banque Privée, Chirurgie Esthétique, Immobilier d\'Exception, Supercars et Droit des Affaires.',
+      exploreFolder: 'Dossier Source : C:\\dev\\Stepping Stone',
+      stats: {
+        count: '13 Plateformes',
+        countSub: 'Secteurs d\'élite couverts',
+        conversion: '100% Modulaire',
+        conversionSub: 'React 19 + Tailwind + Vite',
+        leadGen: 'CRM & Leads Intégrés',
+        leadGenSub: 'Formulaires haute qualification',
+        quietLuxury: 'Quiet Luxury UI',
+        quietLuxurySub: 'Esthétique premium sur-mesure',
+      },
+      sectors: {
+        all: 'Toutes les Niches (13)',
+        wealth: 'Banque Privée & Droit',
+        realestate: 'Immobilier de Prestige',
+        medical: 'Santé & Esthétique',
+        luxury: 'Supercars & Lifestyle',
+      },
+      ctaDetails: 'Consulter l\'architecture',
+      viewSourceFolder: 'Inspecter les 13 Sites',
     },
     // Admin
     admin: {
@@ -97,8 +127,10 @@ const translations: Record<Language, Translations> = {
     // Navigation
     nav: {
       home: 'Home',
+      showcase3d: '3D Matrix',
       skills: 'Skills',
       portfolio: 'Portfolio',
+      niches: 'Niche Pack',
       contact: 'Contact',
       admin: 'Admin',
     },
@@ -146,6 +178,7 @@ const translations: Record<Language, Translations> = {
         design: 'Design & Audits',
         development: 'SaaS Development',
         productivity: 'ERP Systems',
+        niches: 'Stepping Stones Niche Pack',
       },
       antigravityScore: 'Antigravity Score',
       viewProject: 'View project',
@@ -155,6 +188,33 @@ const translations: Record<Language, Translations> = {
       visitSite: 'Visit site',
       viewCode: 'View code',
       noProjects: 'No projects found',
+    },
+    // Niche Pack
+    nichePack: {
+      badge: 'HIGH-TICKET COLLECTION — STEPPING STONES',
+      title: 'Niche Websites Pack',
+      highlight: 'High Conversion',
+      description: '13 ultra-specialized web platforms tailored for high-ticket industries: Private Banking, Plastic Surgery, Prestigious Real Estate, Supercars, and Corporate Law.',
+      exploreFolder: 'Source Directory: C:\\dev\\Stepping Stone',
+      stats: {
+        count: '13 Platforms',
+        countSub: 'Elite sectors covered',
+        conversion: '100% Modular',
+        conversionSub: 'React 19 + Tailwind + Vite',
+        leadGen: 'Integrated CRM & Leads',
+        leadGenSub: 'High-ticket qualification workflows',
+        quietLuxury: 'Quiet Luxury UI',
+        quietLuxurySub: 'Bespoke premium aesthetics',
+      },
+      sectors: {
+        all: 'All Niches (13)',
+        wealth: 'Private Wealth & Law',
+        realestate: 'Prestigious Estates',
+        medical: 'Aesthetic Medicine',
+        luxury: 'Supercars & Lifestyle',
+      },
+      ctaDetails: 'View Architecture',
+      viewSourceFolder: 'Inspect 13 Sites',
     },
     // Admin
     admin: {

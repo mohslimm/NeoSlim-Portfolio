@@ -1,30 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Star, Filter, ArrowUpRight, X, Globe } from 'lucide-react';
 import { useI18n } from '../contexts/I18nContext';
-import { supabase } from '../lib/supabase';
-import { Skeleton } from '../components/ui/skeleton';
+import { allProjects, type ProjectCategory } from '../data/projectsData';
 
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
-
-interface ProjectData {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  category: 'design' | 'development' | 'productivity';
-  antigravity_score: number;
-  created_at?: string;
-  updated_at?: string;
-}
 
 interface UnifiedProject {
   id: string;
   title: string;
   description: string;
   image: string;
-  category: 'design' | 'development' | 'productivity';
+  category: ProjectCategory;
   antigravityScore: number;
   year: string;
   tags: string[];
@@ -34,318 +22,77 @@ interface UnifiedProject {
   gallery?: string[];
   tagline?: string;
   keyAchievement?: string;
+  isNichePack?: boolean;
+  nicheSector?: string;
+  location?: string;
 }
-
-const projectsMetadata: Record<string, {
-  year: string;
-  tags: string[];
-  fullDescription: { fr: string; en: string };
-  githubUrl?: string;
-  demoUrl?: string;
-  gallery?: string[];
-  tagline?: { fr: string; en: string };
-  keyAchievement?: { fr: string; en: string };
-}> = {
-  '7': {
-    year: '2024',
-    tags: ['n8n / Make', 'LLM Routing', 'React / Next.js', 'Node.js', 'BullMQ', 'Redis', 'Python'],
-    tagline: {
-      fr: "Plateforme de Sales Intelligence augmentée par l'IA pour automatiser la prospection de données à grande échelle.",
-      en: "AI-augmented Sales Intelligence platform designed to automate lead generation and sales data processing at scale."
-    },
-    fullDescription: {
-      fr: "Ingénierie IA avancée intégrant un routeur de requêtes LLM dynamique pour optimiser les coûts et le temps de réponse. L'architecture repose sur des systèmes d'agents autonomes et des pipelines d'automatisation asynchrones via n8n/Make connectés par APIs, assurant un traitement résilient et sans friction des données de prospection.",
-      en: "Advanced AI engineering incorporating a dynamic LLM query router to minimize costs and latency. The architecture leverages autonomous agents and asynchronous automation pipelines via API-interconnected n8n/Make systems, ensuring resilient, zero-friction sales data processing."
-    },
-    keyAchievement: {
-      fr: "Automatisation Autonome & Routage Intelligent",
-      en: "Autonomous Automation & Intelligent Routing"
-    },
-    githubUrl: 'https://github.com/mohslimm/stonelink',
-    demoUrl: 'https://stonelink.neoslim.online',
-    gallery: ['/projects/nebula.jpg']
-  },
-  '8': {
-    year: '2024',
-    tags: ['React', 'NestJS', 'MongoDB', 'GraphQL', 'Microservices', 'Docker', 'Kubernetes'],
-    tagline: {
-      fr: "ERP d'entreprise modulaire et hautement scalable conçu pour les flux d'activités complexes.",
-      en: "Highly scalable and modular enterprise ERP designed for complex multi-sector business workflows."
-    },
-    fullDescription: {
-      fr: "Architecture logicielle robuste basée sur des modules et plugins indépendants, permettant une adaptabilité multi-sectorielle sans surcharge. La gestion des données repose sur des schémas MongoDB complexes optimisés pour le reporting analytique temps réel et l'optimisation des processus back-office.",
-      en: "Robust software architecture utilizing independent modules and plugins to provide multi-sector adaptability without bloat. Powered by complex MongoDB schema designs optimized for real-time analytical reporting and back-office process speed."
-    },
-    keyAchievement: {
-      fr: "Architecture Modulaire & Scalabilité Microservices",
-      en: "Modular Architecture & Microservices Scalability"
-    },
-    githubUrl: 'https://github.com/mohslimm/nexus-horizon-erp',
-    demoUrl: 'https://nexus.neoslim.online',
-    gallery: ['/projects/quantum.jpg']
-  },
-  '9': {
-    year: '2023',
-    tags: ['Next.js', 'Figma', 'Lighthouse 100%', 'OWASP Security', 'Tailwind CSS', 'Framer Motion', 'TypeScript'],
-    tagline: {
-      fr: "Plateforme de réservation et courtage de yachts de luxe avec UI/UX haut de gamme et performances optimales.",
-      en: "Luxury yacht charter and brokerage platform featuring premium UI/UX and industry-leading performance."
-    },
-    fullDescription: {
-      fr: "Audit technique approfondi et développement d'un prototype d'exception appliquant les standards du \"Quiet Luxury\" et du glassmorphism. Optimisation drastique des performances front-end pour atteindre un score Lighthouse de 100% (chargement sub-seconde) et implémentation de protocoles de sécurité avancés pour la protection des données clients et des transactions.",
-      en: "In-depth technical audit and prototype development applying \"Quiet Luxury\" aesthetics and glassmorphic UI. Engineered for sub-second page loads, reaching a 100% Lighthouse performance score, combined with hardened security layers to protect transactions and customer files."
-    },
-    keyAchievement: {
-      fr: "Score Lighthouse 100% & Sécurité Renforcée",
-      en: "100% Lighthouse Score & Hardened Security"
-    },
-    githubUrl: 'https://github.com/mohslimm/vespera-luxury-brokerage',
-    demoUrl: 'https://tropical-boat.vercel.app/',
-    gallery: ['/projects/aurora.jpg']
-  },
-  '1': {
-    year: '2024',
-    tags: ['React', 'D3.js', 'Python', 'FastAPI', 'Tailwind'],
-    fullDescription: {
-      fr: "Nebula Dashboard est une plateforme analytique d'entreprise révolutionnaire qui intègre l'intelligence artificielle pour prédire les tendances futures du marché. Conçue pour les équipes de données et les décideurs, elle permet de traiter des millions de points de données en temps réel avec des visualisations interactives hautement personnalisables.",
-      en: "Nebula Dashboard is a revolutionary enterprise analytics platform that integrates artificial intelligence to predict future market trends. Designed for data teams and decision makers, it processes millions of data points in real time with highly customizable interactive visualizations."
-    },
-    githubUrl: 'https://github.com/mohslimm/nebula-dashboard',
-    demoUrl: 'https://nebula.neoslim.dev',
-    gallery: ['/projects/nebula.jpg']
-  },
-  '2': {
-    year: '2024',
-    tags: ['Figma', 'Storybook', 'Tokens', 'React', 'Tailwind'],
-    fullDescription: {
-      fr: "Un système de design complet et modulaire conçu pour unifier l'expérience utilisateur sur l'ensemble des produits. Construit avec React et Tailwind CSS, il comprend plus de 200 composants interactifs testés pour l'accessibilité (WCAG), une documentation Figma synchronisée et des jetons de design automatisés.",
-      en: "A comprehensive, modular design system built to unify user experience across all products. Built with React and Tailwind CSS, it features over 200 interactive components tested for accessibility (WCAG), synchronized Figma documentation, and automated design tokens."
-    },
-    githubUrl: 'https://github.com/mohslimm/aurora-design-system',
-    demoUrl: 'https://aurora.neoslim.dev',
-    gallery: ['/projects/aurora.jpg']
-  },
-  '3': {
-    year: '2024',
-    tags: ['Next.js', 'OpenAI', 'Prisma', 'PostgreSQL', 'Tailwind'],
-    fullDescription: {
-      fr: "Quantum Flow redéfinit la productivité d'équipe en automatisant les tâches répétitives via des modèles de langage avancés. L'application s'intègre à vos outils existants (Slack, GitHub, Jira) pour coordonner les tâches, générer des rapports de progression et suggérer des optimisations de workflow intelligentes.",
-      en: "Quantum Flow redefines team productivity by automating repetitive tasks using advanced language models. The application integrates with your existing tools (Slack, GitHub, Jira) to coordinate tasks, generate progress reports, and suggest intelligent workflow optimizations."
-    },
-    githubUrl: 'https://github.com/mohslimm/quantum-flow',
-    demoUrl: 'https://quantum.neoslim.dev',
-    gallery: ['/projects/quantum.jpg']
-  },
-  '4': {
-    year: '2023',
-    tags: ['Next.js', 'Three.js', 'Stripe', 'Tailwind', 'Sanity.io'],
-    fullDescription: {
-      fr: "Une vitrine e-commerce de nouvelle génération offrant une immersion en 3D grâce à Three.js. Les utilisateurs peuvent manipuler les produits à 360°, personnaliser les textures en temps réel, et passer à la caisse de manière ultra-sécurisée et rapide grâce à une architecture Headless connectée à Stripe.",
-      en: "A next-generation e-commerce storefront offering a 3D immersion thanks to Three.js. Users can manipulate products in 360°, customize textures in real time, and checkout securely and fast using a Headless architecture powered by Stripe."
-    },
-    githubUrl: 'https://github.com/mohslimm/stellar-ecommerce',
-    demoUrl: 'https://stellar.neoslim.dev',
-    gallery: ['/projects/stellar.jpg']
-  },
-  '5': {
-    year: '2023',
-    tags: ['Branding', 'Figma', 'Illustrator', 'After Effects', 'Webflow'],
-    fullDescription: {
-      fr: "Création de l'identité de marque complète pour Zenith, une fintech qui simplifie l'investissement durable. Le projet comprend la conception du logo, la charte graphique, les animations de marque, ainsi qu'un site vitrine haut de gamme reflétant les valeurs de transparence et d'innovation.",
-      en: "Brand identity design for Zenith, a fintech simplifying sustainable investment. The project includes logo design, color guidelines, motion brand assets, and a high-end marketing website reflecting transparency and innovation."
-    },
-    githubUrl: 'https://github.com/mohslimm/zenith-branding',
-    demoUrl: 'https://zenith.neoslim.dev',
-    gallery: ['/projects/zenith.jpg']
-  },
-  '6': {
-    year: '2023',
-    tags: ['Vue.js', 'Node.js', 'GPT-4', 'Express', 'MongoDB'],
-    fullDescription: {
-      fr: "Orbit CRM est une solution de gestion de relation client assistée par intelligence artificielle. Elle analyse automatiquement les interactions par e-mail et appel pour qualifier les prospects, prédire les intentions d'achat et suggérer des actions de suivi personnalisées pour vos équipes commerciales.",
-      en: "Orbit CRM is an AI-assisted customer relationship management solution. It automatically analyzes email and call interactions to qualify leads, predict purchase intent, and suggest personalized follow-up actions for your sales teams."
-    },
-    githubUrl: 'https://github.com/mohslimm/orbit-crm',
-    demoUrl: 'https://orbit.neoslim.dev',
-    gallery: ['/projects/orbit.jpg']
-  }
-};
-
-const fallbackProjects: ProjectData[] = [
-  {
-    id: '7',
-    title: 'StoneLink',
-    description: 'Plateforme SaaS d\'intelligence commerciale augmentée par l\'IA avec routage LLM dynamique et workflows asynchrones.',
-    image: '/projects/nebula.jpg',
-    category: 'development',
-    antigravity_score: 99,
-  },
-  {
-    id: '8',
-    title: 'Nexus Horizon ERP',
-    description: 'Système ERP modulaire, scalable et multi-sectoriel conçu pour la gestion multi-sectorielle complexe sous microservices.',
-    image: '/projects/quantum.jpg',
-    category: 'productivity',
-    antigravity_score: 98,
-  },
-  {
-    id: '9',
-    title: 'Tropicalboat Luxury Yacht Charters',
-    description: 'Audit technique complet et prototype haut de gamme de plateforme de courtage et réservation de yachts de luxe.',
-    image: '/projects/aurora.jpg',
-    category: 'design',
-    antigravity_score: 99,
-  },
-  {
-    id: '1',
-    title: 'Nebula Dashboard',
-    description: 'Tableau de bord analytics avec visualisation de données temps réel et IA prédictive.',
-    image: '/projects/nebula.jpg',
-    category: 'development',
-    antigravity_score: 98,
-  },
-  {
-    id: '2',
-    title: 'Aurora Design System',
-    description: 'Système de design complet avec 200+ composants et documentation interactive.',
-    image: '/projects/aurora.jpg',
-    category: 'design',
-    antigravity_score: 99,
-  },
-  {
-    id: '3',
-    title: 'Quantum Flow',
-    description: 'Application de productivité avec automatisation intelligente des workflows.',
-    image: '/projects/quantum.jpg',
-    category: 'productivity',
-    antigravity_score: 97,
-  },
-  {
-    id: '4',
-    title: 'Stellar E-commerce',
-    description: 'Plateforme e-commerce headless avec expérience 3D immersive.',
-    image: '/projects/stellar.jpg',
-    category: 'development',
-    antigravity_score: 96,
-  },
-  {
-    id: '5',
-    title: 'Zenith Branding',
-    description: 'Identité visuelle complète pour une startup fintech innovante.',
-    image: '/projects/zenith.jpg',
-    category: 'design',
-    antigravity_score: 98,
-  },
-  {
-    id: '6',
-    title: 'Orbit CRM',
-    description: 'CRM intelligent avec intégration IA pour la gestion client.',
-    image: '/projects/orbit.jpg',
-    category: 'productivity',
-    antigravity_score: 95,
-  },
-];
 
 export function ProjectsPage() {
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
   const { t, language, toggleLanguage } = useI18n();
   
-  const [rawProjects, setRawProjects] = useState<ProjectData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState<'all' | 'design' | 'development' | 'productivity'>('all');
+  const [activeFilter, setActiveFilter] = useState<ProjectCategory>('all');
+  const [selectedGalleryImg, setSelectedGalleryImg] = useState<string | null>(null);
 
   useEffect(() => {
     // Scroll to top on page mount
     window.scrollTo(0, 0);
-    loadProjects();
   }, []);
 
-  const loadProjects = async () => {
-    setIsLoading(true);
-    
-    // 2.5 second timeout to prevent getting stuck in skeleton loading state
-    const timeoutPromise = new Promise<{ data: null; error: Error }>((_, reject) =>
-      setTimeout(() => reject(new Error('Supabase request timed out')), 2500)
-    );
-
-    try {
-      const fetchPromise = supabase
-        .from('projects')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      const response = await Promise.race([
-        fetchPromise,
-        timeoutPromise
-      ]) as { data: any[] | null; error: any };
-
-      if (response.error) throw response.error;
-      if (response.data && response.data.length > 0) {
-        setRawProjects(response.data);
-      } else {
-        setRawProjects(fallbackProjects);
-      }
-    } catch (error) {
-      console.error('Error loading projects or connection timed out:', error);
-      setRawProjects(fallbackProjects);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const getUnifiedProjects = (): UnifiedProject[] => {
-    return rawProjects.map((p) => {
-      const meta = projectsMetadata[p.id] || {
-        year: p.created_at ? new Date(p.created_at).getFullYear().toString() : new Date().getFullYear().toString(),
-        tags: [p.category.toUpperCase()],
-        fullDescription: {
-          fr: p.description,
-          en: p.description,
-        },
-        githubUrl: undefined,
-        demoUrl: undefined,
-        gallery: [p.image],
-      };
-
-      return {
-        id: p.id,
-        title: p.title,
-        description: p.description,
-        image: p.image,
-        category: p.category,
-        antigravityScore: p.antigravity_score,
-        year: meta.year,
-        tags: meta.tags,
-        fullDescription: language === 'fr' ? meta.fullDescription.fr : meta.fullDescription.en,
-        githubUrl: meta.githubUrl,
-        demoUrl: meta.demoUrl,
-        gallery: meta.gallery,
-        tagline: meta.tagline ? (language === 'fr' ? meta.tagline.fr : meta.tagline.en) : undefined,
-        keyAchievement: meta.keyAchievement ? (language === 'fr' ? meta.keyAchievement.fr : meta.keyAchievement.en) : undefined,
-      };
-    });
-  };
-
-  const unifiedProjects = getUnifiedProjects();
+  const unifiedProjects: UnifiedProject[] = allProjects.map((p) => ({
+    id: p.id,
+    title: p.title,
+    description: language === 'fr' ? p.descriptionFr : p.descriptionEn,
+    image: p.image,
+    category: p.category,
+    antigravityScore: p.antigravityScore,
+    year: p.year,
+    tags: p.tags,
+    fullDescription: language === 'fr' ? p.fullDescriptionFr : p.fullDescriptionEn,
+    githubUrl: p.githubUrl,
+    demoUrl: p.demoUrl,
+    gallery: p.gallery,
+    tagline: language === 'fr' ? p.taglineFr : p.taglineEn,
+    keyAchievement: language === 'fr' ? p.keyAchievementFr : p.keyAchievementEn,
+    isNichePack: p.isNichePack,
+    nicheSector: p.nicheSector,
+    location: p.location,
+  }));
 
   const filteredProjects = activeFilter === 'all'
     ? unifiedProjects
     : unifiedProjects.filter((p) => p.category === activeFilter);
 
-  const activeProject = unifiedProjects.find((p) => p.id === id);
+  const activeProject = unifiedProjects.find((p) => {
+    if (p.id === id) return true;
+    if (id === '7' && p.id === 'stonelink') return true;
+    if (id === '8' && p.id === 'nexus-horizon') return true;
+    if (id === '9' && p.id === 'tropicalboat') return true;
+    if (id === '1' && p.id === 'anis-phone') return true;
+    if (id === '2' && p.id === 'kachef') return true;
+    if (id === '3' && p.id === 'resortos') return true;
+    if (id === '4' && p.id === 'commercia') return true;
+    if (id === '5' && p.id === 'autoshine-pro') return true;
+    if (id === '6' && p.id === 'parfait-voyage') return true;
+    return false;
+  });
 
-  const filters: { key: typeof activeFilter; label: string }[] = [
-    { key: 'all', label: language === 'fr' ? 'Tous' : 'All' },
-    { key: 'design', label: language === 'fr' ? 'Design & Audits' : 'Design & Audits' },
+  const modalDisplayImage = selectedGalleryImg || activeProject?.image || '';
+
+  const filters: { key: ProjectCategory; label: string }[] = [
+    { key: 'all', label: language === 'fr' ? `Tous (${unifiedProjects.length})` : `All (${unifiedProjects.length})` },
     { key: 'development', label: language === 'fr' ? 'Développement SaaS' : 'SaaS Development' },
     { key: 'productivity', label: language === 'fr' ? 'Systèmes ERP' : 'ERP Systems' },
+    { key: 'design', label: language === 'fr' ? 'Design & Audits' : 'Design & Audits' },
+    { key: 'niches', label: language === 'fr' ? 'Pack Niches Stepping Stones (13)' : 'Stepping Stones Niche Pack (13)' },
   ];
 
   // Close modal callback
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
+    setSelectedGalleryImg(null);
     navigate('/projects');
-  };
+  }, [navigate]);
 
   // Keyboard accessibility
   useEffect(() => {
@@ -356,7 +103,7 @@ export function ProjectsPage() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [id]);
+  }, [id, handleCloseModal]);
 
   // Prevent scroll when modal is open
   useEffect(() => {
@@ -483,26 +230,11 @@ export function ProjectsPage() {
           ))}
         </motion.div>
 
-        {/* Projects Grid / Loading skeletons */}
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map((num) => (
-              <div key={num} className="glass-card rounded-2xl overflow-hidden p-4 border border-[#F2F2F2]/5 space-y-4">
-                <Skeleton className="w-full aspect-[4/3] rounded-xl bg-white/5" />
-                <Skeleton className="w-2/3 h-6 bg-white/5" />
-                <Skeleton className="w-full h-12 bg-white/5" />
-                <div className="flex gap-2">
-                  <Skeleton className="w-12 h-5 bg-white/5" />
-                  <Skeleton className="w-16 h-5 bg-white/5" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            layout
-          >
+        {/* Projects Grid */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          layout
+        >
             <AnimatePresence mode="popLayout">
               {filteredProjects.length === 0 ? (
                 <div className="col-span-full py-20 text-center text-[#A1A1AA] font-mono">
@@ -552,9 +284,23 @@ export function ProjectsPage() {
                         {/* Text Content */}
                         <div className="p-6 flex-1 flex flex-col justify-between">
                           <div>
-                            <span className="font-mono text-xs text-[#C5864E] uppercase tracking-wider block mb-2">
-                              {project.category}
-                            </span>
+                            <div className="flex items-center justify-between gap-2 mb-2">
+                              <span className="font-mono text-xs text-[#C5864E] uppercase tracking-wider">
+                                {project.category}
+                              </span>
+                              {project.location && (
+                                <span className="text-[10px] text-[#A1A1AA] font-mono truncate max-w-[130px]">
+                                  {project.location}
+                                </span>
+                              )}
+                            </div>
+                            {project.isNichePack && (
+                              <div className="mb-2">
+                                <span className="inline-block px-2 py-0.5 text-[9px] font-mono uppercase tracking-wider text-[#C5864E] bg-[#C5864E]/10 border border-[#C5864E]/30 rounded-full">
+                                  Stepping Stone Niche
+                                </span>
+                              </div>
+                            )}
                             <h3 className="font-serif text-2xl font-semibold text-[#F2F2F2] mb-3 group-hover:text-[#C5864E] transition-colors line-clamp-1">
                               {project.title}
                             </h3>
@@ -595,7 +341,6 @@ export function ProjectsPage() {
               )}
             </AnimatePresence>
           </motion.div>
-        )}
       </div>
 
       {/* Dynamic Project Details Modal Overlay */}
@@ -629,11 +374,11 @@ export function ProjectsPage() {
                 {/* Visual Section - 5cols */}
                 <div className="md:col-span-5 relative aspect-[4/3] md:aspect-auto md:min-h-[500px] overflow-hidden bg-[#161618]">
                   <img
-                    src={activeProject.image}
+                    src={modalDisplayImage}
                     alt={activeProject.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-all duration-300"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black/80 via-transparent to-transparent z-10" />
+                  <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black/80 via-transparent to-transparent z-10 pointer-events-none" />
 
                   {/* Left Bottom Badges */}
                   <div className="absolute bottom-6 left-6 z-20 flex flex-wrap gap-2.5">
@@ -644,6 +389,26 @@ export function ProjectsPage() {
                       {activeProject.category}
                     </span>
                   </div>
+
+                  {/* Gallery Thumbnails Strip */}
+                  {activeProject.gallery && activeProject.gallery.length > 1 && (
+                    <div className="absolute top-6 left-6 z-20 flex flex-wrap gap-2 max-w-[80%]">
+                      {activeProject.gallery.map((img, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => setSelectedGalleryImg(img)}
+                          className={`w-11 h-11 rounded-lg overflow-hidden border transition-all ${
+                            modalDisplayImage === img
+                              ? 'border-[#C5864E] ring-2 ring-[#C5864E]/40 scale-105 shadow-lg'
+                              : 'border-white/20 opacity-60 hover:opacity-100'
+                          }`}
+                        >
+                          <img src={img} alt="" className="w-full h-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Content Section - 7cols */}
@@ -651,10 +416,22 @@ export function ProjectsPage() {
                   <div>
                     {/* Header score */}
                     <div className="flex items-center justify-between mb-4 pr-12 md:pr-16">
-                      <span className="font-mono text-xs text-[#C5864E] uppercase tracking-wider block">
-                        {activeProject.category}
-                      </span>
-                      <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C5864E]/10 border border-[#C5864E]/30">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-mono text-xs text-[#C5864E] uppercase tracking-wider block">
+                          {activeProject.category}
+                        </span>
+                        {activeProject.isNichePack && (
+                          <span className="px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-wider text-[#C5864E] bg-[#C5864E]/10 border border-[#C5864E]/30 rounded-full">
+                            Stepping Stones Niche Pack
+                          </span>
+                        )}
+                        {activeProject.location && (
+                          <span className="text-xs text-[#A1A1AA] font-mono">
+                            • {activeProject.location}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C5864E]/10 border border-[#C5864E]/30 shrink-0">
                         <Star className="w-3.5 h-3.5 text-[#C5864E] fill-[#C5864E]" />
                         <span className="font-mono text-xs font-bold text-[#C5864E]">
                           {t('portfolio.antigravityScore') as string} : {activeProject.antigravityScore}

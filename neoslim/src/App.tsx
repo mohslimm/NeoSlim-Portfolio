@@ -5,9 +5,11 @@ import { I18nProvider } from './contexts/I18nContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Navigation } from './sections/Navigation';
 import { Hero } from './sections/Hero';
+import { ProjectCubeShowcase } from './sections/ProjectCubeShowcase';
 import { Skills } from './sections/Skills';
 import { DataViz } from './sections/DataViz';
 import { Portfolio } from './sections/Portfolio';
+import { NichePackShowcase } from './sections/NichePackShowcase';
 import { Footer } from './sections/Footer';
 import { lazy, Suspense } from 'react';
 import './App.css';
@@ -16,15 +18,6 @@ import './App.css';
 const ProjectsPage = lazy(() => import('./sections/ProjectsPage').then(module => ({ default: module.ProjectsPage })));
 const AdminLogin = lazy(() => import('./sections/AdminLogin').then(module => ({ default: module.AdminLogin })));
 const AdminDashboard = lazy(() => import('./sections/AdminDashboard').then(module => ({ default: module.AdminDashboard })));
-
-// Preload ProjectsPage chunk on first hover — eliminates click delay
-let projectsPreloaded = false;
-export function preloadProjectsPage() {
-  if (!projectsPreloaded) {
-    projectsPreloaded = true;
-    import('./sections/ProjectsPage');
-  }
-}
 
 // Grain Overlay Component
 function GrainOverlay() {
@@ -62,12 +55,11 @@ function ScrollProgress() {
 function CustomCursor() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [isTouchDevice] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
+  );
 
   useEffect(() => {
-    // Detect touch device
-    setIsTouchDevice(window.matchMedia('(pointer: coarse)').matches);
-
     const handleMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
     };
@@ -143,9 +135,11 @@ function MainPage() {
     <main className="relative w-full overflow-x-hidden bg-[#0A0A0B]">
       <Navigation />
       <Hero />
+      <ProjectCubeShowcase />
       <Skills />
       <DataViz />
       <Portfolio />
+      <NichePackShowcase />
       <Footer />
     </main>
   );

@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { useI18n } from '../contexts/I18nContext';
-import { ArrowDown, Sparkles, Globe, ChevronRight } from 'lucide-react';
+import { ArrowDown, Sparkles, Globe, ChevronRight, Rotate3d } from 'lucide-react';
+import { FluidAmbience } from '../components/FluidAmbience';
+import { ScrambleText } from '../components/ScrambleText';
 
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -44,12 +46,15 @@ export function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0A0A0B]">
+      {/* Dynamic Fluid Ambience Shader (Quiet Luxury) */}
+      <FluidAmbience opacity={0.32} speed={0.85} />
+
       {/* Animated Background Gradient */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(197, 134, 78, 0.15) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(197, 134, 78, 0.12) 0%, transparent 70%)',
           }}
           animate={{
             x: [0, 50, 0],
@@ -65,7 +70,7 @@ export function Hero() {
         <motion.div
           className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(197, 134, 78, 0.1) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(197, 134, 78, 0.08) 0%, transparent 70%)',
           }}
           animate={{
             x: [0, -40, 0],
@@ -82,7 +87,7 @@ export function Hero() {
 
       {/* Grid Pattern Overlay */}
       <div 
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{
           backgroundImage: `
             linear-gradient(rgba(197, 134, 78, 0.5) 1px, transparent 1px),
@@ -149,12 +154,12 @@ export function Hero() {
         </motion.h1>
 
         {/* Role */}
-        <motion.p
+        <motion.div
           variants={itemVariants}
-          className="text-xl md:text-2xl text-[#A1A1AA] mb-4 font-light"
+          className="text-xl md:text-2xl text-[#C5864E] mb-4 font-light font-mono"
         >
-          {t('hero.role') as string}
-        </motion.p>
+          <ScrambleText text={t('hero.role') as string} duration={0.9} />
+        </motion.div>
 
         {/* Subtitle */}
         <motion.p
@@ -170,25 +175,29 @@ export function Hero() {
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <motion.a
-            href="#portfolio"
-            className="group relative px-8 py-4 bg-[#C5864E] text-[#0A0A0B] rounded-full font-medium flex items-center gap-2 overflow-hidden"
+            href="#showcase3d"
+            className="group relative px-7 py-4 rounded-full font-medium flex items-center gap-2.5 overflow-hidden border border-[#c5a059] bg-[#c5a059] text-[#060610] shadow-[0_0_30px_rgba(197,160,89,0.35)]"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <motion.div
-              className="absolute inset-0 bg-white/20"
-              initial={{ x: '-100%' }}
-              whileHover={{ x: '100%' }}
-              transition={{ duration: 0.5 }}
-            />
-            <Sparkles className="w-5 h-5" />
-            <span>{t('hero.ctaPrimary') as string}</span>
+            <Rotate3d className="w-5 h-5 text-[#060610]" />
+            <span className="font-semibold">{language === 'fr' ? 'Explorer la Matrice 3D' : 'Explore 3D Matrix'}</span>
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </motion.a>
 
           <motion.a
+            href="#portfolio"
+            className="px-7 py-4 glass-card text-[#F2F2F2] rounded-full font-medium flex items-center gap-2 hover:border-[#C5864E]/50 transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Sparkles className="w-4 h-4 text-[#C5864E]" />
+            <span>{t('hero.ctaPrimary') as string}</span>
+          </motion.a>
+
+          <motion.a
             href="#contact"
-            className="px-8 py-4 glass-card text-[#F2F2F2] rounded-full font-medium flex items-center gap-2 hover:border-[#C5864E]/50 transition-colors"
+            className="px-7 py-4 glass-card text-[#A1A1AA] hover:text-[#F2F2F2] rounded-full font-medium flex items-center gap-2 hover:border-[#C5864E]/40 transition-colors"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >

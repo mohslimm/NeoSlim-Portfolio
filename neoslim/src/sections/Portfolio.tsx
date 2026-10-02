@@ -3,144 +3,31 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from '../contexts/I18nContext';
 import { ExternalLink, Star, Filter, ArrowUpRight } from 'lucide-react';
-import { preloadProjectsPage } from '../App';
+import { preloadProjectsPage } from '../lib/preload';
 
 const MotionLink = motion(Link);
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-type Category = 'all' | 'design' | 'development' | 'productivity';
+import { allProjects, type ProjectCategory } from '../data/projectsData';
 
-interface Project {
-  id: string;
-  title: string;
-  descriptionFr: string;
-  descriptionEn: string;
-  image: string;
-  category: Exclude<Category, 'all'>;
-  antigravityScore: number;
-  year: string;
-  tags: string[];
-}
-
-const projects: Project[] = [
-  {
-    id: '7',
-    title: 'StoneLink',
-    descriptionFr: 'Plateforme SaaS d\'intelligence commerciale augmentée par l\'IA avec routage LLM dynamique et workflows asynchrones.',
-    descriptionEn: 'AI-augmented sales intelligence SaaS platform featuring dynamic LLM routing and complex asynchronous workflows.',
-    image: '/projects/nebula.jpg',
-    category: 'development',
-    antigravityScore: 99,
-    year: '2024',
-    tags: ['React', 'Next.js', 'Node.js', 'LLM Routing', 'BullMQ', 'Redis'],
-  },
-  {
-    id: '8',
-    title: 'Nexus Horizon ERP',
-    descriptionFr: 'Système ERP modulaire, scalable et multi-sectoriel conçu pour la gestion multi-sectorielle complexe sous microservices.',
-    descriptionEn: 'Modular, scalable, and multi-sector ERP system built on microservices for complex management.',
-    image: '/projects/quantum.jpg',
-    category: 'productivity',
-    antigravityScore: 98,
-    year: '2024',
-    tags: ['React', 'NestJS', 'MongoDB', 'Docker', 'Kubernetes', 'GraphQL'],
-  },
-  {
-    id: '9',
-    title: 'Tropicalboat Luxury Yacht Charters',
-    descriptionFr: 'Audit technique complet et prototype haut de gamme de plateforme de courtage et réservation de yachts de luxe.',
-    descriptionEn: 'Technical audit and high-end prototype of a luxury yacht brokerage and reservation platform.',
-    image: '/projects/aurora.jpg',
-    category: 'design',
-    antigravityScore: 99,
-    year: '2023',
-    tags: ['Next.js', 'Figma', 'Lighthouse 100%', 'OWASP Security', 'TypeScript'],
-  },
-  {
-    id: '1',
-    title: 'Nebula Dashboard',
-    descriptionFr: 'Tableau de bord analytics avec visualisation de données temps réel et IA prédictive.',
-    descriptionEn: 'Analytics dashboard featuring real-time data visualization and predictive AI.',
-    image: '/projects/nebula.jpg',
-    category: 'development',
-    antigravityScore: 98,
-    year: '2024',
-    tags: ['React', 'D3.js', 'Python'],
-  },
-  {
-    id: '2',
-    title: 'Aurora Design System',
-    descriptionFr: 'Système de design complet avec 200+ composants et documentation interactive.',
-    descriptionEn: 'Comprehensive design system featuring 200+ components and interactive documentation.',
-    image: '/projects/aurora.jpg',
-    category: 'design',
-    antigravityScore: 99,
-    year: '2024',
-    tags: ['Figma', 'Storybook', 'Tokens'],
-  },
-  {
-    id: '3',
-    title: 'Quantum Flow',
-    descriptionFr: 'Application de productivité avec automatisation intelligente des workflows.',
-    descriptionEn: 'Productivity application with intelligent workflow automation.',
-    image: '/projects/quantum.jpg',
-    category: 'productivity',
-    antigravityScore: 97,
-    year: '2024',
-    tags: ['Next.js', 'OpenAI', 'Prisma'],
-  },
-  {
-    id: '4',
-    title: 'Stellar E-commerce',
-    descriptionFr: 'Plateforme e-commerce headless avec expérience 3D immersive.',
-    descriptionEn: 'Headless e-commerce platform with immersive 3D experience.',
-    image: '/projects/stellar.jpg',
-    category: 'development',
-    antigravityScore: 96,
-    year: '2023',
-    tags: ['Next.js', 'Three.js', 'Stripe'],
-  },
-  {
-    id: '5',
-    title: 'Zenith Branding',
-    descriptionFr: 'Identité visuelle complète pour une startup fintech innovante.',
-    descriptionEn: 'Complete visual identity for an innovative fintech startup.',
-    image: '/projects/zenith.jpg',
-    category: 'design',
-    antigravityScore: 98,
-    year: '2023',
-    tags: ['Branding', 'Motion', 'Web'],
-  },
-  {
-    id: '6',
-    title: 'Orbit CRM',
-    descriptionFr: 'CRM intelligent avec intégration IA pour la gestion client.',
-    descriptionEn: 'Intelligent CRM with AI integration for customer management.',
-    image: '/projects/orbit.jpg',
-    category: 'productivity',
-    antigravityScore: 95,
-    year: '2023',
-    tags: ['Vue.js', 'Node.js', 'GPT-4'],
-  },
-];
-
-const filters: { key: Category; label: string }[] = [
+const filters: { key: ProjectCategory; label: string }[] = [
   { key: 'all', label: 'Tous' },
-  { key: 'design', label: 'Design & Audits' },
   { key: 'development', label: 'Développement SaaS' },
   { key: 'productivity', label: 'Systèmes ERP' },
+  { key: 'design', label: 'Design & Audits' },
+  { key: 'niches', label: 'Pack Niches Stepping Stones' },
 ];
 
 export function Portfolio() {
   const { t, language } = useI18n();
-  const [activeFilter, setActiveFilter] = useState<Category>('all');
+  const [activeFilter, setActiveFilter] = useState<ProjectCategory>('all');
 
   const filteredProjects =
     activeFilter === 'all'
-      ? projects
-      : projects.filter((p) => p.category === activeFilter);
+      ? allProjects
+      : allProjects.filter((p) => p.category === activeFilter);
 
-  const getFilterLabel = (key: Category) => {
+  const getFilterLabel = (key: ProjectCategory) => {
     if (key === 'all') return (t('portfolio.filters.all') as string) || 'Tous';
     return (t(`portfolio.filters.${key}`) as string) || key;
   };
