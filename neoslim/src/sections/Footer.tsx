@@ -43,44 +43,61 @@ export function Footer() {
 
       <div className="relative z-10">
         {/* CTA Section */}
-        <div className="max-w-7xl mx-auto px-6 py-24">
+        <div className="max-w-7xl mx-auto px-6 py-28">
           <motion.div
-            className="text-center"
+            className="text-center max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1, ease: easeAntigravity }}
           >
             <motion.span
-              className="inline-block font-mono text-sm text-[#C5864E] tracking-widest uppercase mb-4"
+              className="inline-block badge-luxury mb-6"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.8 }}
+              transition={{ delay: 0.1, duration: 0.8 }}
             >
-              {t('footer.contact') as string}
+              STEPPING STONES AGENCY • COLLABORATIONS SÉLECTIVES
             </motion.span>
-            <h2 className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-[#F2F2F2] mb-8">
-              Travaillons{' '}
-              <span className="italic gradient-text">ensemble</span>
+            <h2 className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-[#f0ede8] mb-6 tracking-tight">
+              Bâtissons votre{' '}
+              <span className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#f0ede8] via-[#e8c77a] to-[#c5a059]">
+                architecture
+              </span>
             </h2>
-            <p className="text-[#A1A1AA] text-lg max-w-xl mx-auto mb-10">
-              Vous avez un projet en tête ? Discutons de la façon dont je peux vous aider à le réaliser.
+            <p className="text-[#f0ede8]/70 text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed font-light">
+              Architectures logicielles critiques, plateformes web haute conversion ou refontes Quiet Luxury. Échangeons sur votre vision.
             </p>
-            <motion.a
-              href="mailto:neoslim.dev@gmail.com"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-[#C5864E] text-[#0A0A0B] rounded-full font-medium text-lg group"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span>neoslim.dev@gmail.com</span>
-              <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-            </motion.a>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <motion.a
+                href="mailto:neoslim.dev@gmail.com"
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-base btn-gold-cta group"
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+              >
+                <span>neoslim.dev@gmail.com</span>
+                <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              </motion.a>
+
+              <motion.a
+                href="https://www.linkedin.com/in/mohamed-slimani-"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-7 py-4 rounded-full font-medium text-sm text-[#f0ede8] luxury-card hover:border-[#c5a059]/40 transition-colors"
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+              >
+                <Linkedin className="w-4 h-4 text-[#c5a059]" />
+                <span>LinkedIn Profile</span>
+              </motion.a>
+            </div>
           </motion.div>
         </div>
 
         {/* Main Footer */}
-        <div className="border-t border-[#C5864E]/10">
+        <div className="border-t border-white/[0.08] bg-[#060610]/90">
           <div className="max-w-7xl mx-auto px-6 py-16">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               {/* Brand */}
@@ -90,13 +107,17 @@ export function Footer() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <h3 className="flex items-center mb-4">
-                  <img src="./logo.png" alt="NeoSlim Logo" className="h-16 w-auto object-contain" />
-                </h3>
-                <p className="text-[#A1A1AA] text-sm leading-relaxed mb-6">
-                  Senior Full-Stack Developer spécialisé dans les architectures haute performance, la sécurité et le design "Quiet Luxury".
+                <div className="flex items-center gap-3 mb-4">
+                  <img src="./logo.png" alt="NeoSlim Logo" className="h-12 w-auto object-contain" />
+                  <div>
+                    <span className="font-serif text-lg font-bold text-[#f0ede8] block">MOHAMED SLIMANI</span>
+                    <span className="font-mono text-[9px] text-[#c5a059] tracking-widest uppercase">Stepping Stones Agency</span>
+                  </div>
+                </div>
+                <p className="text-[#f0ede8]/60 text-xs leading-relaxed mb-6 font-light max-w-sm">
+                  Senior Full-Stack Architect & Founder de Stepping Stones Agency. Spécialisé en systèmes critiques MERN / Next.js, sécurité défensive et design Quiet Luxury.
                 </p>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   {socialLinks.map((social, index) => {
                     const Icon = social.icon;
                     return (
@@ -105,15 +126,16 @@ export function Footer() {
                         href={social.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-10 h-10 rounded-lg bg-[#1a1a1a] flex items-center justify-center text-[#A1A1AA] hover:text-[#C5864E] hover:bg-[#C5864E]/10 transition-colors"
+                        className="w-9 h-9 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-[#f0ede8]/70 hover:text-[#e8c77a] hover:border-[#c5a059]/40 hover:bg-[#c5a059]/10 transition-all"
                         whileHover={{ scale: 1.1, y: -2 }}
                         whileTap={{ scale: 0.9 }}
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 }}
+                        transition={{ delay: index * 0.08 }}
+                        aria-label={social.label}
                       >
-                        <Icon className="w-5 h-5" />
+                        <Icon className="w-4 h-4" />
                       </motion.a>
                     );
                   })}

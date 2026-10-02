@@ -160,85 +160,90 @@ export function DataViz() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Chart Container */}
           <motion.div
-            className="chart-container relative"
-            initial={{ opacity: 0, scale: 0.9 }}
+            className="luxury-card relative p-6 sm:p-8 bg-[#0a0a14]/80 border border-white/[0.08]"
+            initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 1.2, ease: easeAntigravity }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 1, ease: easeAntigravity }}
           >
-            {/* Glow Effect */}
+            {/* Ambient Gold Glow Behind Chart */}
             <motion.div
-              className="absolute inset-0 rounded-2xl"
+              className="absolute inset-0 rounded-2xl pointer-events-none"
               style={{
-                background: 'radial-gradient(circle at 50% 50%, rgba(197, 134, 78, 0.2) 0%, transparent 70%)',
+                background: 'radial-gradient(circle at 50% 50%, rgba(197, 160, 89, 0.14) 0%, transparent 65%)',
               }}
               animate={{
-                opacity: [0.5, 0.8, 0.5],
-                scale: [1, 1.05, 1],
+                opacity: [0.6, 0.9, 0.6],
+                scale: [1, 1.03, 1],
               }}
               transition={{
-                duration: 4,
+                duration: 5,
                 repeat: Infinity,
                 ease: 'easeInOut',
               }}
             />
             
-            <div className="relative h-[400px] md:h-[500px]">
+            <div className="relative h-[380px] md:h-[480px]">
               <Radar data={chartData} options={chartOptions} />
             </div>
 
-            {/* Chart Label */}
+            {/* Chart Label Pill */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
-              <span className="font-mono text-xs text-[#A1A1AA] tracking-widest uppercase">
+              <span className="badge-luxury text-[10px]">
                 {t('dataViz.chartLabel') as string}
               </span>
             </div>
           </motion.div>
 
           {/* Metrics Grid */}
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-5">
             {metrics.map((metric, index) => {
               const Icon = metric.icon;
               return (
                 <motion.div
                   key={metric.label}
-                  className="glass-card rounded-2xl p-6 relative overflow-hidden group"
-                  initial={{ opacity: 0, y: 40 }}
+                  className="luxury-card rounded-2xl p-6 relative overflow-hidden group bg-[#0c0c1c]/70 border border-white/[0.08] hover:border-[#c5a059]/40 hover:shadow-[0_15px_40px_rgba(0,0,0,0.6),0_0_20px_rgba(197,160,89,0.12)] transition-all duration-400"
+                  initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.2 + index * 0.1, duration: 1, ease: easeAntigravity }}
+                  transition={{ delay: 0.15 + index * 0.08, duration: 0.8, ease: easeAntigravity }}
                   whileHover={{ y: -4, transition: { duration: 0.3 } }}
                 >
                   {/* Hover Glow */}
                   <motion.div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
                     style={{
-                      background: 'radial-gradient(circle at 50% 0%, rgba(197, 134, 78, 0.2) 0%, transparent 60%)',
+                      background: 'radial-gradient(circle at 50% 0%, rgba(197, 160, 89, 0.15) 0%, transparent 60%)',
                     }}
                   />
 
                   <div className="relative z-10">
-                    <motion.div
-                      className="w-12 h-12 rounded-xl bg-[#C5864E]/10 flex items-center justify-center mb-4"
-                      whileHover={{ rotate: 10, scale: 1.1 }}
-                    >
-                      <Icon className="w-6 h-6 text-[#C5864E]" />
-                    </motion.div>
+                    <div className="flex items-center justify-between mb-4">
+                      <motion.div
+                        className="w-11 h-11 rounded-xl bg-[#c5a059]/10 border border-[#c5a059]/25 flex items-center justify-center text-[#c5a059]"
+                        whileHover={{ rotate: 10, scale: 1.1 }}
+                      >
+                        <Icon className="w-5 h-5 text-[#e8c77a]" />
+                      </motion.div>
+                      <span className="font-mono text-[10px] text-[#22c55e] bg-[#22c55e]/10 border border-[#22c55e]/20 px-2 py-0.5 rounded-full">
+                        Audit A+
+                      </span>
+                    </div>
 
                     <div className="flex items-baseline gap-1">
                       <motion.span
-                        className="font-mono text-4xl font-bold text-[#F2F2F2]"
+                        className="font-mono text-4xl sm:text-5xl font-bold text-[#f0ede8]"
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
-                        transition={{ delay: 0.5 + index * 0.1, duration: 0.8 }}
+                        transition={{ delay: 0.3 + index * 0.1, duration: 0.8 }}
                       >
                         {metric.value}
                       </motion.span>
-                      <span className="font-mono text-sm text-[#A1A1AA]">{metric.suffix}</span>
+                      <span className="font-mono text-sm font-semibold text-[#c5a059]">{metric.suffix}</span>
                     </div>
 
-                    <p className="text-sm text-[#A1A1AA] mt-2">{metric.label}</p>
+                    <p className="text-xs text-[#f0ede8]/70 mt-2 font-medium">{metric.label}</p>
                   </div>
                 </motion.div>
               );

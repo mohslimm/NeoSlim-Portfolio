@@ -146,72 +146,69 @@ export function Skills() {
               <motion.div
                 key={category.id}
                 variants={cardVariants}
-                className="skill-card glass-card rounded-2xl p-8 relative overflow-hidden group"
-                whileHover={{ y: -8, transition: { duration: 0.4, ease: easeAntigravity } }}
+                className="luxury-card rounded-2xl p-7 sm:p-8 relative overflow-hidden group bg-[#0a0a14]/70 border border-white/[0.08] hover:border-[#c5a059]/40 hover:shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_25px_rgba(197,160,89,0.1)] transition-all duration-500"
+                whileHover={{ y: -6, transition: { duration: 0.35, ease: easeAntigravity } }}
               >
-                {/* Glow Effect on Hover */}
+                {/* Subtle Radial Glow */}
                 <motion.div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
                   style={{
-                    background: 'radial-gradient(circle at 50% 0%, rgba(197, 134, 78, 0.15) 0%, transparent 60%)',
+                    background: 'radial-gradient(circle at 50% 0%, rgba(197, 160, 89, 0.12) 0%, transparent 70%)',
                   }}
                 />
 
                 {/* Category Header */}
-                <div className="relative z-10 flex items-center gap-4 mb-8">
-                  <motion.div
-                    className="w-14 h-14 rounded-xl bg-[#C5864E]/10 flex items-center justify-center"
-                    whileHover={{ rotate: 10, scale: 1.1 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Icon className="w-7 h-7 text-[#C5864E]" />
-                  </motion.div>
-                  <h3 className="font-serif text-2xl font-semibold text-[#F2F2F2]">
-                    {categoryTitle}
-                  </h3>
+                <div className="relative z-10 flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-4">
+                    <motion.div
+                      className="w-13 h-13 rounded-xl bg-[#c5a059]/10 border border-[#c5a059]/25 flex items-center justify-center p-3 text-[#c5a059]"
+                      whileHover={{ rotate: 8, scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <Icon className="w-6 h-6 text-[#e8c77a]" />
+                    </motion.div>
+                    <div>
+                      <span className="font-mono text-[10px] text-[#c5a059] uppercase tracking-widest block mb-0.5">
+                        Domain 0{skillCategories.indexOf(category) + 1}
+                      </span>
+                      <h3 className="font-serif text-2xl font-semibold text-[#f0ede8]">
+                        {categoryTitle}
+                      </h3>
+                    </div>
+                  </div>
+                  <span className="font-mono text-xs text-[#f0ede8]/40 border border-white/5 px-2.5 py-1 rounded-full bg-white/[0.02]">
+                    5 Modules
+                  </span>
                 </div>
 
                 {/* Skills List */}
-                <div className="relative z-10 space-y-5">
+                <div className="relative z-10 space-y-4">
                   {category.skills.map((skill, skillIndex) => (
-                    <div key={skill.name} className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-[#F2F2F2] text-sm font-medium">{skill.name}</span>
-                        <span className="font-mono text-sm text-[#C5864E]">{skill.level}%</span>
+                    <div key={skill.name} className="space-y-1.5">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-[#f0ede8]/90 font-medium tracking-wide">{skill.name}</span>
+                        <span className="font-mono text-xs font-semibold text-[#e8c77a]">{skill.level}%</span>
                       </div>
-                      <div className="h-2 bg-[#1a1a1a] rounded-full overflow-hidden">
+                      <div className="h-1.5 bg-black/40 rounded-full overflow-hidden border border-white/5">
                         <motion.div
                           className="h-full rounded-full relative"
                           style={{
-                            background: 'linear-gradient(90deg, #C5864E 0%, #E5A76E 100%)',
+                            background: 'linear-gradient(90deg, #c5a059 0%, #e8c77a 100%)',
                             width: `${skill.level}%`,
                           }}
                           initial={{ scaleX: 0, originX: 0 }}
                           whileInView={{ scaleX: 1 }}
                           viewport={{ once: true }}
-                          transition={{ delay: 0.3 + skillIndex * 0.1, duration: 1, ease: easeAntigravity }}
-                        >
-                          <motion.div
-                            className="absolute inset-0 bg-white/20"
-                            animate={{
-                              x: ['-100%', '100%'],
-                            }}
-                            transition={{
-                              duration: 2,
-                              repeat: Infinity,
-                              ease: 'linear',
-                              delay: skillIndex * 0.2,
-                            }}
-                          />
-                        </motion.div>
+                          transition={{ delay: 0.2 + skillIndex * 0.08, duration: 0.9, ease: easeAntigravity }}
+                        />
                       </div>
                     </div>
                   ))}
                 </div>
 
-                {/* Decorative Corner */}
-                <div className="absolute top-0 right-0 w-20 h-20 opacity-10">
-                  <div className="absolute top-4 right-4 w-8 h-8 border-t border-r border-[#C5864E]" />
+                {/* Subtle Decorative Hairline */}
+                <div className="absolute top-0 right-0 w-16 h-16 pointer-events-none opacity-20">
+                  <div className="absolute top-3 right-3 w-6 h-6 border-t border-r border-[#c5a059]" />
                 </div>
               </motion.div>
             );

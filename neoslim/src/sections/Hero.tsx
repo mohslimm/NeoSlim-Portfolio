@@ -121,25 +121,24 @@ export function Hero() {
         {/* Availability Badge */}
         <motion.div variants={itemVariants} className="mb-8">
           <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full antigravity-score"
+            className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full badge-luxury"
             variants={floatingVariants}
             animate="animate"
           >
-            <motion.span
-              className="w-2 h-2 rounded-full bg-[#C5864E]"
-              animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-            <span className="text-sm font-mono text-[#C5864E]">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22c55e] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22c55e]"></span>
+            </span>
+            <span className="font-mono text-xs tracking-wider text-[#e8c77a]">
               {t('hero.badge') as string}
             </span>
           </motion.div>
         </motion.div>
 
-        {/* Greeting */}
+        {/* Greeting / Agency Hook */}
         <motion.p
           variants={itemVariants}
-          className="text-[#A1A1AA] font-mono text-sm tracking-widest uppercase mb-4"
+          className="text-[#c5a059] font-mono text-xs md:text-sm tracking-[0.25em] uppercase mb-4"
         >
           {t('hero.greeting') as string}
         </motion.p>
@@ -147,16 +146,18 @@ export function Hero() {
         {/* Main Title */}
         <motion.h1
           variants={itemVariants}
-          className="font-serif text-6xl md:text-8xl lg:text-9xl font-bold text-[#F2F2F2] mb-6 tracking-tight"
+          className="font-serif text-6xl md:text-8xl lg:text-9xl font-bold text-[#f0ede8] mb-6 tracking-tight drop-shadow-2xl"
         >
           Mohamed{' '}
-          <span className="gradient-text italic">Slimani</span>
+          <span className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#f0ede8] via-[#e8c77a] to-[#c5a059]">
+            Slimani
+          </span>
         </motion.h1>
 
-        {/* Role */}
+        {/* Role & Cybernetic Scramble */}
         <motion.div
           variants={itemVariants}
-          className="text-xl md:text-2xl text-[#C5864E] mb-4 font-light font-mono"
+          className="text-lg md:text-2xl text-[#e8c77a] mb-5 font-light font-mono"
         >
           <ScrambleText text={t('hero.role') as string} duration={0.9} />
         </motion.div>
@@ -164,7 +165,7 @@ export function Hero() {
         {/* Subtitle */}
         <motion.p
           variants={itemVariants}
-          className="text-[#A1A1AA]/70 text-base md:text-lg max-w-2xl mx-auto mb-12"
+          className="text-[#f0ede8]/70 text-base md:text-lg max-w-2xl mx-auto mb-12 leading-relaxed font-light"
         >
           {t('hero.subtitle') as string}
         </motion.p>
@@ -176,32 +177,32 @@ export function Hero() {
         >
           <motion.a
             href="#showcase3d"
-            className="group relative px-7 py-4 rounded-full font-medium flex items-center gap-2.5 overflow-hidden border border-[#c5a059] bg-[#c5a059] text-[#060610] shadow-[0_0_30px_rgba(197,160,89,0.35)]"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            className="group relative px-7 py-4 rounded-full font-medium flex items-center gap-2.5 overflow-hidden btn-gold-cta"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
           >
-            <Rotate3d className="w-5 h-5 text-[#060610]" />
+            <Rotate3d className="w-5 h-5 text-[#1A1200]" />
             <span className="font-semibold">{language === 'fr' ? 'Explorer la Matrice 3D' : 'Explore 3D Matrix'}</span>
-            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <ChevronRight className="w-4 h-4 text-[#1A1200] group-hover:translate-x-1 transition-transform" />
           </motion.a>
 
           <motion.a
             href="#portfolio"
-            className="px-7 py-4 glass-card text-[#F2F2F2] rounded-full font-medium flex items-center gap-2 hover:border-[#C5864E]/50 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            className="px-7 py-4 luxury-card text-[#f0ede8] rounded-full font-medium flex items-center gap-2 hover:border-[#c5a059]/60 transition-colors"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
           >
-            <Sparkles className="w-4 h-4 text-[#C5864E]" />
+            <Sparkles className="w-4 h-4 text-[#c5a059]" />
             <span>{t('hero.ctaPrimary') as string}</span>
           </motion.a>
 
           <motion.a
-            href="#contact"
-            className="px-7 py-4 glass-card text-[#A1A1AA] hover:text-[#F2F2F2] rounded-full font-medium flex items-center gap-2 hover:border-[#C5864E]/40 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            href="#niches"
+            className="px-7 py-4 luxury-card text-[#f0ede8]/80 hover:text-[#f0ede8] rounded-full font-medium flex items-center gap-2 hover:border-[#c5a059]/40 transition-colors"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
           >
-            <span>{t('hero.ctaSecondary') as string}</span>
+            <span>{language === 'fr' ? 'Pack Niches (13)' : 'Niche Pack (13)'}</span>
           </motion.a>
         </motion.div>
 
