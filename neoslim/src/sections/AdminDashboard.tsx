@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useProjectStore, type LeadItem } from '../stores/useProjectStore';
 import type { ProjectItem, ProjectCategory } from '../data/projectsData';
+import { SingleProjectAdminDashboard } from '../components/SingleProjectAdminDashboard';
 import {
   FolderKanban,
   Inbox,
@@ -26,6 +27,7 @@ import {
   Eye,
   MessageCircle,
   Mail,
+  Sparkles,
 } from 'lucide-react';
 
 const CATEGORIES: { id: ProjectCategory; labelFr: string }[] = [
@@ -76,12 +78,17 @@ export const AdminDashboard = memo(() => {
     deleteLead,
   } = useProjectStore();
 
-  const [activeTab, setActiveTab] = useState<'projects' | 'leads' | 'telemetry' | 'settings'>('projects');
+  const [activeTab, setActiveTab] = useState<'project-cockpits' | 'projects' | 'leads' | 'telemetry' | 'settings'>('project-cockpits');
+  const [selectedProjectId, setSelectedProjectId] = useState<string>('aegis-alpha-mt5');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<ProjectItem>(emptyProjectForm);
   const [tagsInput, setTagsInput] = useState('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const currentSelectedProject = useMemo(() => {
+    return projects.find((p) => p.id === selectedProjectId) || projects[0];
+  }, [projects, selectedProjectId]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -260,6 +267,18 @@ export const AdminDashboard = memo(() => {
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-white/[0.08] pb-4">
           <div className="flex items-center gap-2 overflow-x-auto">
             <button
+              onClick={() => setActiveTab('project-cockpits')}
+              className={`px-4 py-2.5 rounded-xl text-xs font-mono flex items-center gap-2.5 transition-all ${
+                activeTab === 'project-cockpits'
+                  ? 'bg-[#c5a059] text-black font-semibold shadow-[0_0_20px_rgba(197,160,89,0.3)]'
+                  : 'bg-white/[0.03] hover:bg-white/[0.06] text-white/70 hover:text-white border border-white/10'
+              }`}
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Cockpits Projets ({projects.length})</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('projects')}
               className={`px-4 py-2.5 rounded-xl text-xs font-mono flex items-center gap-2.5 transition-all ${
                 activeTab === 'projects'
@@ -268,7 +287,7 @@ export const AdminDashboard = memo(() => {
               }`}
             >
               <FolderKanban className="w-4 h-4" />
-              <span>Projets ({projects.length})</span>
+              <span>Inventaire Projets ({projects.length})</span>
             </button>
 
             <button
@@ -321,6 +340,16 @@ export const AdminDashboard = memo(() => {
             </button>
           )}
         </div>
+
+        {/* TAB 0: STEPPING STONES PROJECT COCKPIT */}
+        {activeTab === 'project-cockpits' && currentSelectedProject && (
+          <SingleProjectAdminDashboard
+            currentProject={currentSelectedProject}
+            allProjects={projects}
+            onSelectProject={(id) => setSelectedProjectId(id)}
+            onEditProject={(p) => handleOpenEdit(p)}
+          />
+        )}
 
         {/* TAB 1: PROJECTS MANAGEMENT */}
         {activeTab === 'projects' && (
@@ -453,8 +482,19 @@ export const AdminDashboard = memo(() => {
 
                       <div className="flex items-center gap-2">
                         <button
+                          onClick={() => {
+                            setSelectedProjectId(project.id);
+                            setActiveTab('project-cockpits');
+                          }}
+                          className="px-3 py-1.5 rounded-lg bg-[#c5a059]/15 hover:bg-[#c5a059]/30 text-[#e8c77a] border border-[#c5a059]/40 text-xs font-mono flex items-center gap-1.5 transition-all shadow-sm"
+                          title="Ouvrir le Cockpit Stepping Stones Dédié"
+                        >
+                          <Sparkles className="w-3 h-3 text-[#c5a059]" />
+                          <span>Cockpit</span>
+                        </button>
+                        <button
                           onClick={() => handleOpenEdit(project)}
-                          className="px-3 py-1.5 rounded-lg bg-white/[0.05] hover:bg-[#c5a059]/20 hover:text-[#e8c77a] border border-white/10 text-xs font-mono flex items-center gap-1.5 transition-all"
+                          className="px-3 py-1.5 rounded-lg bg-white/[0.05] hover:bg-white/10 text-white/80 hover:text-white border border-white/10 text-xs font-mono flex items-center gap-1.5 transition-all"
                         >
                           <Edit3 className="w-3 h-3" />
                           <span>Éditer</span>
