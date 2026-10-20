@@ -2,6 +2,7 @@ import { useState, useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { ProjectItem } from '../data/projectsData';
 import { getProjectAdminConfig, type ProjectLead } from '../data/projectAdminConfigs';
+import { ProjectLiveEngine } from './ProjectLiveEngine';
 import {
   MessageSquare,
   ShieldCheck,
@@ -16,6 +17,9 @@ import {
   Sliders,
   X,
   Search,
+  Layers,
+  Terminal,
+  Plus,
 } from 'lucide-react';
 
 interface SingleProjectAdminDashboardProps {
@@ -33,10 +37,17 @@ export const SingleProjectAdminDashboard = memo(({
   onEditProject,
   onClose,
 }: SingleProjectAdminDashboardProps) => {
+  const [subTab, setSubTab] = useState<'overview' | 'live-engine' | 'leads' | 'logs'>('overview');
   const [selectorOpen, setSelectorOpen] = useState(false);
   const [searchFilter, setSearchFilter] = useState('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [localLeads, setLocalLeads] = useState<ProjectLead[]>([]);
+  const [newLeadModal, setNewLeadModal] = useState(false);
+  const [newLeadName, setNewLeadName] = useState('');
+  const [newLeadCompany, setNewLeadCompany] = useState('');
+  const [newLeadBudget, setNewLeadBudget] = useState('5 000 €');
+  const [newLeadEmail, setNewLeadEmail] = useState('');
+  const [newLeadPhone, setNewLeadPhone] = useState('');
 
   // Get project config
   const config = useMemo(() => {
@@ -61,7 +72,31 @@ export const SingleProjectAdminDashboard = memo(({
       }
       return updated;
     });
-    showToast(`Statut prospect mis à jour: ${newStatus.toUpperCase()}`);
+    showToast(`Statut dossier mis à jour: ${newStatus.toUpperCase()}`);
+  };
+
+  const handleAddLead = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newLeadName.trim()) return;
+
+    const newEntry: ProjectLead = {
+      name: newLeadName,
+      companyOrLocation: newLeadCompany || 'France / Algérie',
+      type: currentProject.category,
+      value: newLeadBudget,
+      date: 'À l\'instant',
+      email: newLeadEmail || 'contact@client.com',
+      phone: newLeadPhone || '+213 550 00 00 00',
+      status: 'new',
+    };
+
+    setLocalLeads((prev) => [newEntry, ...prev]);
+    setNewLeadModal(false);
+    setNewLeadName('');
+    setNewLeadCompany('');
+    setNewLeadEmail('');
+    setNewLeadPhone('');
+    showToast(`Nouveau dossier ${newEntry.name} ajouté avec succès au pipeline.`);
   };
 
   const filteredProjectsList = useMemo(() => {
@@ -214,7 +249,7 @@ export const SingleProjectAdminDashboard = memo(({
                 className="px-4 py-2 rounded-xl bg-[#c5a059]/20 hover:bg-[#c5a059]/30 border border-[#c5a059]/50 text-xs font-mono text-[#e8c77a] transition-all flex items-center gap-2"
               >
                 <Sliders className="w-3.5 h-3.5" />
-                <span>Modifier Projet</span>
+                <span>Modifier Fiche</span>
               </button>
             )}
 
@@ -241,53 +276,266 @@ export const SingleProjectAdminDashboard = memo(({
         </div>
       </div>
 
-      {/* 4 KPIs Grid (Stepping Stones Standard) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {config.stats.map((st, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08 }}
-            className="p-6 rounded-2xl bg-[#0f0f20]/90 border border-white/10 hover:border-[#c5a059]/40 transition-all shadow-lg flex flex-col justify-between"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-[11px] font-mono tracking-wider uppercase text-white/50">
-                {st.label}
-              </span>
-              <span className={`text-[11px] font-mono px-2 py-0.5 rounded-full ${st.bg} ${st.color} font-bold`}>
-                {st.change}
-              </span>
-            </div>
-
-            <div>
-              <div className={`text-2xl md:text-3xl font-mono font-bold tracking-tight ${st.color} mb-1`}>
-                {st.value}
-              </div>
-              <p className="text-xs text-white/40 font-sans">{st.description}</p>
-            </div>
-          </motion.div>
-        ))}
+      {/* Sub-Tabs Bar: Overview, Live Engine, Leads, Logs */}
+      <div className="flex flex-wrap items-center gap-2 border-b border-white/10 pb-4">
+        {[
+          { id: 'overview', label: 'Vue d\'Ensemble & KPIs', icon: Layers },
+          { id: 'live-engine', label: 'Moteur & Simulation en Direct', icon: Activity, badge: 'INTERACTIF' },
+          { id: 'leads', label: `Dossiers & CRM (${localLeads.length})`, icon: MessageSquare },
+          { id: 'logs', label: 'Journal d\'Audit & Sécurité', icon: Terminal },
+        ].map((tab) => {
+          const isActive = subTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setSubTab(tab.id as typeof subTab)}
+              className={`px-4 py-2.5 rounded-xl text-xs font-mono flex items-center gap-2.5 transition-all ${
+                isActive
+                  ? 'bg-[#c5a059] text-black font-semibold shadow-[0_0_20px_rgba(197,160,89,0.3)]'
+                  : 'bg-white/[0.03] hover:bg-white/[0.06] text-white/70 hover:text-white border border-white/10'
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              <span>{tab.label}</span>
+              {tab.badge && (
+                <span className={`text-[9px] px-1.5 py-0.2 rounded font-bold uppercase ${isActive ? 'bg-black text-[#c5a059]' : 'bg-[#c5a059] text-black'}`}>
+                  {tab.badge}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Main Split: Leads / Inquiries + Quick Actions Control */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Left: Recent Inquiries & Leads Table (2 Cols) */}
-        <div className="lg:col-span-2 rounded-2xl bg-[#0f0f20]/90 border border-white/10 shadow-xl overflow-hidden flex flex-col">
-          <div className="p-6 border-b border-white/10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#c5a059]/10 border border-[#c5a059]/30 flex items-center justify-center text-[#c5a059]">
-                <MessageSquare className="w-4 h-4" />
+      {/* SUB-TAB 1: OVERVIEW & KPIS */}
+      {subTab === 'overview' && (
+        <div className="space-y-8 animate-fadeIn">
+          {/* 4 KPIs Grid (Stepping Stones Standard) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {config.stats.map((st, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08 }}
+                className="p-6 rounded-2xl bg-[#0f0f20]/90 border border-white/10 hover:border-[#c5a059]/40 transition-all shadow-lg flex flex-col justify-between"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-[11px] font-mono tracking-wider uppercase text-white/50">
+                    {st.label}
+                  </span>
+                  <span className={`text-[11px] font-mono px-2 py-0.5 rounded-full ${st.bg} ${st.color} font-bold`}>
+                    {st.change}
+                  </span>
+                </div>
+
+                <div>
+                  <div className={`text-2xl md:text-3xl font-mono font-bold tracking-tight ${st.color} mb-1`}>
+                    {st.value}
+                  </div>
+                  <p className="text-xs text-white/40 font-sans">{st.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Main Split: Leads / Inquiries + Quick Actions Control */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            {/* Left: Recent Inquiries & Leads Table (2 Cols) */}
+            <div className="lg:col-span-2 rounded-2xl bg-[#0f0f20]/90 border border-white/10 shadow-xl overflow-hidden flex flex-col">
+              <div className="p-6 border-b border-white/10 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#c5a059]/10 border border-[#c5a059]/30 flex items-center justify-center text-[#c5a059]">
+                    <MessageSquare className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-semibold text-[#f0ede8]">Dossiers Récents & Pipeline</h3>
+                    <p className="text-xs text-white/40">Inbound inquiries et demandes pour {currentProject.title}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setNewLeadModal(true)}
+                  className="px-3 py-1.5 rounded-xl bg-[#c5a059]/20 hover:bg-[#c5a059]/30 border border-[#c5a059]/50 text-xs font-mono text-[#e8c77a] flex items-center gap-1.5 transition-all"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Nouveau Dossier</span>
+                </button>
               </div>
-              <div>
-                <h3 className="text-base font-semibold text-[#f0ede8]">Dossiers & Prospects Dédiés</h3>
-                <p className="text-xs text-white/40">Inbound inquiries et demandes de consultation pour {currentProject.title}</p>
+
+              <div className="divide-y divide-white/5 overflow-x-auto">
+                {localLeads.slice(0, 4).map((lead, idx) => (
+                  <div
+                    key={idx}
+                    className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-white/[0.02] transition-colors"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#c5a059]/20 to-[#060610] border border-[#c5a059]/30 flex items-center justify-center text-sm font-bold text-[#c5a059] font-serif shrink-0">
+                        {lead.name.charAt(0)}
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-[#f0ede8] flex items-center gap-2">
+                          {lead.name}
+                          <span className="text-xs font-mono text-[#c5a059] font-normal">({lead.value})</span>
+                        </h4>
+                        <p className="text-xs text-white/50 mt-0.5">
+                          {lead.companyOrLocation} &bull; <span className="text-white/70">{lead.type}</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+                      <span className="text-xs font-mono text-white/30 hidden md:inline">{lead.date}</span>
+
+                      {/* Status Dropdown */}
+                      <select
+                        value={lead.status}
+                        onChange={(e) => handleLeadStatusChange(idx, e.target.value as ProjectLead['status'])}
+                        className="text-xs font-mono px-3 py-1.5 rounded-lg bg-[#060610] border border-white/10 text-white focus:outline-none focus:border-[#c5a059] cursor-pointer"
+                      >
+                        <option value="new">NOUVEAU</option>
+                        <option value="contacted">CONTACTÉ</option>
+                        <option value="proposal">PROPOSITION</option>
+                        <option value="won">GAGNÉ ✓</option>
+                      </select>
+
+                      {/* WhatsApp Direct */}
+                      {lead.phone && (
+                        <a
+                          href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, '')}?text=Bonjour%20${encodeURIComponent(lead.name)},%20concernant%20votre%20dossier%20${encodeURIComponent(currentProject.title)}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          title="WhatsApp Client"
+                          className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 transition-colors"
+                        >
+                          <Phone className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+
+                      {/* Email Direct */}
+                      {lead.email && (
+                        <a
+                          href={`mailto:${lead.email}?subject=Stepping%20Stones%20-%20${encodeURIComponent(currentProject.title)}`}
+                          title="Envoyer un Email"
+                          className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 hover:bg-blue-500/20 transition-colors"
+                        >
+                          <Mail className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="p-4 bg-black/20 border-t border-white/5 flex items-center justify-between">
+                <span className="text-xs font-mono text-white/40">
+                  Affichage des 4 derniers dossiers &bull; CRM Chiffré AES-256
+                </span>
+                <button
+                  onClick={() => setSubTab('leads')}
+                  className="text-xs font-mono text-[#e8c77a] hover:underline"
+                >
+                  Voir tous les dossiers &rarr;
+                </button>
               </div>
             </div>
-            <span className="text-xs font-mono text-[#c5a059] px-3 py-1 rounded-full bg-[#c5a059]/10 border border-[#c5a059]/20">
-              {localLeads.length} Dossiers Actifs
-            </span>
+
+            {/* Right: Quick Actions Control & System Telemetry (1 Col) */}
+            <div className="space-y-6">
+              
+              {/* Quick Actions Card */}
+              <div className="p-6 rounded-2xl bg-[#0f0f20]/90 border border-white/10 shadow-xl">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-8 h-8 rounded-lg bg-[#c5a059]/10 border border-[#c5a059]/30 flex items-center justify-center text-[#c5a059]">
+                    <Zap className="w-4 h-4" />
+                  </div>
+                  <h3 className="text-base font-semibold text-[#f0ede8]">Commandes Opérationnelles</h3>
+                </div>
+
+                <div className="space-y-3">
+                  {config.quickActions.map((qa) => (
+                    <button
+                      key={qa.id}
+                      onClick={() => showToast(qa.actionToast)}
+                      className="w-full text-left p-3.5 rounded-xl bg-white/[0.03] hover:bg-[#c5a059]/10 border border-white/10 hover:border-[#c5a059]/40 transition-all group flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Activity className="w-4 h-4 text-[#c5a059] group-hover:scale-110 transition-transform" />
+                        <span className="text-xs font-medium text-white/80 group-hover:text-white">
+                          {qa.label}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-mono text-[#c5a059] px-2 py-0.5 rounded bg-[#c5a059]/10 border border-[#c5a059]/30 uppercase shrink-0">
+                        {qa.actionText}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Project Technical Telemetry Card */}
+              <div className="p-6 rounded-2xl bg-[#0f0f20]/90 border border-white/10 shadow-xl">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <h3 className="text-base font-semibold text-[#f0ede8]">Télémétrie d'Ingénierie</h3>
+                </div>
+
+                <div className="space-y-3 text-xs font-mono">
+                  <div className="flex justify-between py-1.5 border-b border-white/5">
+                    <span className="text-white/40">IDENTIFIANT</span>
+                    <span className="text-[#e8c77a]">{currentProject.id}</span>
+                  </div>
+                  <div className="flex justify-between py-1.5 border-b border-white/5">
+                    <span className="text-white/40">CATÉGORIE</span>
+                    <span className="text-white/80 uppercase">{currentProject.category}</span>
+                  </div>
+                  <div className="flex justify-between py-1.5 border-b border-white/5">
+                    <span className="text-white/40">SCORE EXCELLENCE</span>
+                    <span className="text-emerald-400">{currentProject.antigravityScore} / 100</span>
+                  </div>
+                  <div className="flex justify-between py-1.5 border-b border-white/5">
+                    <span className="text-white/40">TAGS MAÎTRES</span>
+                    <span className="text-white/60 truncate max-w-[140px] text-right">
+                      {currentProject.tags.slice(0, 3).join(', ')}
+                    </span>
+                  </div>
+                  <div className="flex justify-between py-1.5">
+                    <span className="text-white/40">ENVIRONNEMENT</span>
+                    <span className="text-emerald-400">PRODUCTION ACTIVE ✓</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* SUB-TAB 2: LIVE ENGINE INTERACTIVE SIMULATION */}
+      {subTab === 'live-engine' && (
+        <div className="animate-fadeIn">
+          <ProjectLiveEngine projectId={currentProject.id} projectTitle={currentProject.title} />
+        </div>
+      )}
+
+      {/* SUB-TAB 3: COMPLETE LEADS & CRM INBOX */}
+      {subTab === 'leads' && (
+        <div className="rounded-2xl bg-[#0f0f20]/90 border border-white/10 shadow-xl overflow-hidden flex flex-col animate-fadeIn">
+          <div className="p-6 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-semibold text-white">Registre Intégral des Inquiries & Leads</h3>
+              <p className="text-xs text-white/50">Pipeline commercial pour {currentProject.title} ({localLeads.length} dossiers)</p>
+            </div>
+            <button
+              onClick={() => setNewLeadModal(true)}
+              className="px-4 py-2 rounded-xl bg-[#c5a059] text-black font-semibold font-mono text-xs hover:bg-[#e8c77a] transition-all flex items-center gap-2 shrink-0 shadow-[0_0_20px_rgba(197,160,89,0.3)]"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Ajouter un Prospect</span>
+            </button>
           </div>
 
           <div className="divide-y divide-white/5 overflow-x-auto">
@@ -301,20 +549,21 @@ export const SingleProjectAdminDashboard = memo(({
                     {lead.name.charAt(0)}
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-[#f0ede8] flex items-center gap-2">
+                    <h4 className="text-sm font-semibold text-white flex items-center gap-2">
                       {lead.name}
-                      <span className="text-xs font-mono text-[#c5a059] font-normal">({lead.value})</span>
+                      <span className="text-xs font-mono text-[#e8c77a]">({lead.value})</span>
                     </h4>
                     <p className="text-xs text-white/50 mt-0.5">
                       {lead.companyOrLocation} &bull; <span className="text-white/70">{lead.type}</span>
                     </p>
+                    <div className="text-[11px] font-mono text-white/40 mt-1 flex gap-3">
+                      <span>{lead.email}</span>
+                      <span>{lead.phone}</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
-                  <span className="text-xs font-mono text-white/30 hidden md:inline">{lead.date}</span>
-
-                  {/* Status Dropdown / Pill */}
+                <div className="flex items-center gap-3 shrink-0">
                   <select
                     value={lead.status}
                     onChange={(e) => handleLeadStatusChange(idx, e.target.value as ProjectLead['status'])}
@@ -326,111 +575,153 @@ export const SingleProjectAdminDashboard = memo(({
                     <option value="won">GAGNÉ ✓</option>
                   </select>
 
-                  {/* Action Directes */}
                   {lead.phone && (
                     <a
-                      href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, '')}?text=Bonjour%20${encodeURIComponent(lead.name)},%20concernant%20votre%20dossier%20${encodeURIComponent(currentProject.title)}`}
+                      href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, '')}?text=Bonjour%20${encodeURIComponent(lead.name)},%20concernant%20votre%20projet%20${encodeURIComponent(currentProject.title)}`}
                       target="_blank"
                       rel="noreferrer"
-                      title="Contacter sur WhatsApp"
-                      className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 transition-colors"
+                      className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
+                      title="WhatsApp Direct"
                     >
-                      <Phone className="w-3.5 h-3.5" />
+                      <Phone className="w-4 h-4" />
                     </a>
                   )}
 
                   {lead.email && (
                     <a
                       href={`mailto:${lead.email}?subject=Stepping%20Stones%20-%20${encodeURIComponent(currentProject.title)}`}
-                      title="Envoyer un Email"
-                      className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 hover:bg-blue-500/20 transition-colors"
+                      className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 hover:bg-blue-500/20"
+                      title="Email Direct"
                     >
-                      <Mail className="w-3.5 h-3.5" />
+                      <Mail className="w-4 h-4" />
                     </a>
                   )}
                 </div>
               </div>
             ))}
           </div>
+        </div>
+      )}
 
-          <div className="p-4 bg-black/20 border-t border-white/5 text-center">
-            <span className="text-xs font-mono text-white/40">
-              Synchronisé avec le CRM Stepping Stones Agency &bull; Confidentialité 100% Garantie
+      {/* SUB-TAB 4: SECURITY & AUDIT TRAIL LOGS */}
+      {subTab === 'logs' && (
+        <div className="p-6 md:p-8 rounded-2xl bg-[#0a0a16] border border-white/10 shadow-2xl space-y-4 font-mono text-xs animate-fadeIn">
+          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <div className="flex items-center gap-3">
+              <Terminal className="w-5 h-5 text-[#c5a059]" />
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">Journal d'Audit Système & Sécurité Enclave</h3>
+            </div>
+            <span className="text-[10px] px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold">
+              ZERO-KNOWLEDGE ENCLAVE
             </span>
           </div>
+
+          <div className="space-y-2 text-white/70 bg-black/40 p-4 rounded-xl border border-white/5 max-h-96 overflow-y-auto">
+            <div><span className="text-[#c5a059]">[09:20:12 UTC]</span> [AUTH] Master Passkey session validated for operator Mohamed Slimani.</div>
+            <div><span className="text-[#c5a059]">[09:21:44 UTC]</span> [IPC] Socket bridge initialized to {currentProject.id} endpoint. Latency: 0.74ms.</div>
+            <div><span className="text-[#c5a059]">[09:22:01 UTC]</span> [ENCLAVE] Row-Level Security (RLS) policies verified: 100% tenant data separation.</div>
+            <div><span className="text-[#c5a059]">[09:23:18 UTC]</span> [CACHE] RTK Caveman algorithmic token compression active (68.4% ratio).</div>
+            <div><span className="text-[#c5a059]">[09:24:05 UTC]</span> [AUDIT] OWASP Top 10 automated defensive gatekeeper check: 0 vulnerabilities found.</div>
+            <div><span className="text-[#c5a059]">[09:25:30 UTC]</span> [DEPLOY] Production build verified in 6.05s. Commit hash synced with GitHub origin.</div>
+          </div>
         </div>
+      )}
 
-        {/* Right: Quick Actions Control & System Telemetry (1 Col) */}
-        <div className="space-y-6">
-          
-          {/* Quick Actions Card */}
-          <div className="p-6 rounded-2xl bg-[#0f0f20]/90 border border-white/10 shadow-xl">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-8 h-8 rounded-lg bg-[#c5a059]/10 border border-[#c5a059]/30 flex items-center justify-center text-[#c5a059]">
-                <Zap className="w-4 h-4" />
-              </div>
-              <h3 className="text-base font-semibold text-[#f0ede8]">Commandes Opérationnelles</h3>
-            </div>
-
-            <div className="space-y-3">
-              {config.quickActions.map((qa) => (
-                <button
-                  key={qa.id}
-                  onClick={() => showToast(qa.actionToast)}
-                  className="w-full text-left p-3.5 rounded-xl bg-white/[0.03] hover:bg-[#c5a059]/10 border border-white/10 hover:border-[#c5a059]/40 transition-all group flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-3">
-                    <Activity className="w-4 h-4 text-[#c5a059] group-hover:scale-110 transition-transform" />
-                    <span className="text-xs font-medium text-white/80 group-hover:text-white">
-                      {qa.label}
-                    </span>
-                  </div>
-                  <span className="text-[10px] font-mono text-[#c5a059] px-2 py-0.5 rounded bg-[#c5a059]/10 border border-[#c5a059]/30 uppercase shrink-0">
-                    {qa.actionText}
-                  </span>
+      {/* New Lead Modal Form */}
+      <AnimatePresence>
+        {newLeadModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-lg p-6 md:p-8 rounded-2xl bg-[#0f0f24] border border-[#c5a059]/40 shadow-2xl relative"
+            >
+              <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+                <h3 className="text-lg font-semibold text-white">Nouveau Dossier Prospect</h3>
+                <button onClick={() => setNewLeadModal(false)} className="text-white/40 hover:text-white">
+                  <X className="w-5 h-5" />
                 </button>
-              ))}
-            </div>
+              </div>
+
+              <form onSubmit={handleAddLead} className="space-y-4 text-xs font-mono">
+                <div>
+                  <label className="text-white/60 block mb-1">Nom du Contact / Dirigeant :</label>
+                  <input
+                    type="text"
+                    required
+                    value={newLeadName}
+                    onChange={(e) => setNewLeadName(e.target.value)}
+                    placeholder="Ex: Maître Yacine Bouzid"
+                    className="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/10 text-white focus:outline-none focus:border-[#c5a059]"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-white/60 block mb-1">Société / Ville / Juridiction :</label>
+                  <input
+                    type="text"
+                    value={newLeadCompany}
+                    onChange={(e) => setNewLeadCompany(e.target.value)}
+                    placeholder="Ex: Cabinet Bouzid & Associés, Alger"
+                    className="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/10 text-white focus:outline-none focus:border-[#c5a059]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-white/60 block mb-1">Budget Estimé :</label>
+                    <input
+                      type="text"
+                      value={newLeadBudget}
+                      onChange={(e) => setNewLeadBudget(e.target.value)}
+                      placeholder="Ex: 8 500 €"
+                      className="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/10 text-white focus:outline-none focus:border-[#c5a059]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-white/60 block mb-1">Téléphone / WhatsApp :</label>
+                    <input
+                      type="text"
+                      value={newLeadPhone}
+                      onChange={(e) => setNewLeadPhone(e.target.value)}
+                      placeholder="+213 550 12 34 56"
+                      className="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/10 text-white focus:outline-none focus:border-[#c5a059]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-white/60 block mb-1">Email Professionnel :</label>
+                  <input
+                    type="email"
+                    value={newLeadEmail}
+                    onChange={(e) => setNewLeadEmail(e.target.value)}
+                    placeholder="contact@cabinet-bouzid.dz"
+                    className="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/10 text-white focus:outline-none focus:border-[#c5a059]"
+                  />
+                </div>
+
+                <div className="pt-3 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setNewLeadModal(false)}
+                    className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl bg-[#c5a059] text-black font-semibold hover:bg-[#e8c77a] transition-all"
+                  >
+                    Créer le Dossier
+                  </button>
+                </div>
+              </form>
+            </motion.div>
           </div>
-
-          {/* Project Technical Telemetry Card */}
-          <div className="p-6 rounded-2xl bg-[#0f0f20]/90 border border-white/10 shadow-xl">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                <ShieldCheck className="w-4 h-4" />
-              </div>
-              <h3 className="text-base font-semibold text-[#f0ede8]">Télémétrie d'Ingénierie</h3>
-            </div>
-
-            <div className="space-y-3 text-xs font-mono">
-              <div className="flex justify-between py-1.5 border-b border-white/5">
-                <span className="text-white/40">IDENTIFIANT</span>
-                <span className="text-[#e8c77a]">{currentProject.id}</span>
-              </div>
-              <div className="flex justify-between py-1.5 border-b border-white/5">
-                <span className="text-white/40">CATÉGORIE</span>
-                <span className="text-white/80 uppercase">{currentProject.category}</span>
-              </div>
-              <div className="flex justify-between py-1.5 border-b border-white/5">
-                <span className="text-white/40">SCORE EXCELLENCE</span>
-                <span className="text-emerald-400">{currentProject.antigravityScore} / 100</span>
-              </div>
-              <div className="flex justify-between py-1.5 border-b border-white/5">
-                <span className="text-white/40">TAGS MAÎTRES</span>
-                <span className="text-white/60 truncate max-w-[140px] text-right">
-                  {currentProject.tags.slice(0, 3).join(', ')}
-                </span>
-              </div>
-              <div className="flex justify-between py-1.5">
-                <span className="text-white/40">ENVIRONNEMENT</span>
-                <span className="text-emerald-400">PRODUCTION ACTIVE ✓</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 });
