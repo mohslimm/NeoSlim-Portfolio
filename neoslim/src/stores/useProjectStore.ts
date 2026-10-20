@@ -34,8 +34,8 @@ interface ProjectStoreState {
   deleteLead: (id: string) => void;
 }
 
-const STORAGE_KEY_PROJECTS = 'neoslim_portfolio_projects_v2';
-const STORAGE_KEY_LEADS = 'neoslim_portfolio_leads_v2';
+const STORAGE_KEY_PROJECTS = 'neoslim_portfolio_projects_v3';
+const STORAGE_KEY_LEADS = 'neoslim_portfolio_leads_v3';
 
 const getInitialProjects = (): ProjectItem[] => {
   if (typeof window === 'undefined') return allProjects;

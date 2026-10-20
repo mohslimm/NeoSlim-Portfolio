@@ -173,68 +173,38 @@
   <script>
     const PROJECTS = [
       {
-        id: "aegis",
-        category: "FINTECH • MT5 QUANTITATIVE",
+        id: "aegis-alpha",
+        category: "FINTECH • ALGORITHMIC TRADING",
         title: "Aegis Alpha",
-        titleAccent: "MT5 Algo Terminal",
-        subtitle: "Terminal quantitatif d'exécution algorithmique sur MetaTrader 5 avec télémétrie temps réel et gestionnaire de risque autonome.",
-        tech: ["MetaTrader 5", "Python Flask", "WebSocket 120Hz", "Risk Matrix"],
+        titleAccent: "MT5 Terminal",
+        subtitle: "Passerelle HFT ultra-basse latence connectée à MetaTrader 5 via IPC natif. Graphique de ticks haute fréquence et disjoncteur Risk Shield 2%.",
+        tech: ["MetaTrader 5 IPC", "Python 3.11", "HTML5 Canvas 60FPS", "Risk Shield"],
         imageSrc: "/projects/aegis-alpha-render.jpg",
         draw: (ctx, t, w, h, img) => {
           if (img && img.complete && img.naturalWidth > 0) {
-            // Ken Burns slow zoom effect
-            const scale = 1.05 + Math.sin(t * 0.0005) * 0.05;
-            const iw = w * scale;
-            const ih = h * scale;
-            const ox = (w - iw) / 2;
-            const oy = (h - ih) / 2;
-            ctx.drawImage(img, ox, oy, iw, ih);
-            // Ambient gold overlay
-            ctx.fillStyle = "rgba(6, 6, 16, 0.35)";
+            const scale = 1.04 + Math.sin(t * 0.0005) * 0.04;
+            const iw = w * scale, ih = h * scale;
+            ctx.drawImage(img, (w - iw) / 2, (h - ih) / 2, iw, ih);
+            ctx.fillStyle = "rgba(6, 6, 16, 0.22)";
             ctx.fillRect(0, 0, w, h);
           }
-          // Glowing algorithmic curve overlay
-          ctx.strokeStyle = "#e8c77a";
-          ctx.lineWidth = 3;
-          ctx.shadowColor = "#e8c77a";
-          ctx.shadowBlur = 15;
-          ctx.beginPath();
-          for (let x = 0; x < w; x += 15) {
-            const y = h * 0.75 + Math.sin(x * 0.008 + t * 0.003) * 35;
-            if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-          }
-          ctx.stroke();
-          ctx.shadowBlur = 0;
         }
       },
       {
         id: "el-mouhami",
-        category: "LEGALTECH • VOICE AGENT AI",
+        category: "LEGAL AI • AUTONOMOUS INTAKE",
         title: "El Mouhami Pro",
-        titleAccent: "Plateforme Avocat & IA",
-        subtitle: "Architecture juridique pour cabinets d'avocats et juristes d'affaires en Algérie. Agent vocal multilingue et extraction jurisprudentielle.",
-        tech: ["Whisper Voice AI", "Next.js 15", "NLP Juridique", "PostgreSQL"],
+        titleAccent: "المحامي برو",
+        subtitle: "Agent vocal d'accueil juridique bilingue (Arabe/Français). Qualification 24/7 des contentieux, évaluation de l'urgence et fiches d'instruction chiffrées.",
+        tech: ["Web Speech API", "React 19", "Voice AI Waveform", "Supabase RLS"],
         imageSrc: "/projects/el-mouhami-render.jpg",
         draw: (ctx, t, w, h, img) => {
           if (img && img.complete && img.naturalWidth > 0) {
-            const scale = 1.06 + Math.cos(t * 0.0004) * 0.04;
+            const scale = 1.06 + Math.sin(t * 0.0006) * 0.04;
             const iw = w * scale, ih = h * scale;
             ctx.drawImage(img, (w - iw) / 2, (h - ih) / 2, iw, ih);
-            ctx.fillStyle = "rgba(6, 6, 16, 0.3)";
+            ctx.fillStyle = "rgba(6, 6, 16, 0.25)";
             ctx.fillRect(0, 0, w, h);
-          }
-          // Circular Voice audio spectrum
-          const cx = w * 0.75, cy = h * 0.45;
-          for (let i = 0; i < 36; i++) {
-            const angle = (i / 36) * Math.PI * 2 + t * 0.001;
-            const r = 90 + Math.sin(i * 3 + t * 0.008) * 20;
-            const x1 = cx + Math.cos(angle) * 75;
-            const y1 = cy + Math.sin(angle) * 75;
-            const x2 = cx + Math.cos(angle) * r;
-            const y2 = cy + Math.sin(angle) * r;
-            ctx.strokeStyle = "rgba(232, 199, 122, 0.8)";
-            ctx.lineWidth = 2.5;
-            ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
           }
         }
       },
@@ -281,36 +251,15 @@
         titleAccent: "OmniRoute AI Gateway",
         subtitle: "Routeur multi-LLM d'agence à haute résilience (Claude, Gemini, OpenAI). Compression de tokens par algorithmes Caveman & RTK.",
         tech: ["OmniRoute Engine", "FastAPI / Hono", "Multi-Provider Free Tier", "RTK Cache"],
-        draw: (ctx, t, w, h) => {
-          // Constellation Neural Network Hub
-          const nodes = [];
-          const cx = w / 2;
-          const cy = h / 2;
-          const count = 28;
-          for (let i = 0; i < count; i++) {
-            const a = (i / count) * Math.PI * 2;
-            const r = 180 + Math.sin(i * 3 + t * 0.001) * 120;
-            nodes.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r });
+        imageSrc: "/projects/stonelink-render.jpg",
+        draw: (ctx, t, w, h, img) => {
+          if (img && img.complete && img.naturalWidth > 0) {
+            const scale = 1.05 + Math.sin(t * 0.0005) * 0.05;
+            const iw = w * scale, ih = h * scale;
+            ctx.drawImage(img, (w - iw) / 2, (h - ih) / 2, iw, ih);
+            ctx.fillStyle = "rgba(6, 6, 16, 0.24)";
+            ctx.fillRect(0, 0, w, h);
           }
-          ctx.strokeStyle = "rgba(197, 160, 89, 0.25)";
-          ctx.lineWidth = 1;
-          for (let i = 0; i < nodes.length; i++) {
-            for (let j = i + 1; j < nodes.length; j++) {
-              const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
-              if (d < 160) {
-                ctx.beginPath(); ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(nodes[j].x, nodes[j].y); ctx.stroke();
-              }
-            }
-          }
-          ctx.fillStyle = "#0c0d1e";
-          ctx.strokeStyle = "#c5a059";
-          ctx.lineWidth = 3;
-          ctx.fillRect(cx - 50, cy - 80, 100, 160);
-          ctx.strokeRect(cx - 50, cy - 80, 100, 160);
-          nodes.forEach((n, idx) => {
-            ctx.fillStyle = idx % 2 === 0 ? "#e8c77a" : "#ffffff";
-            ctx.beginPath(); ctx.arc(n.x, n.y, 4, 0, Math.PI * 2); ctx.fill();
-          });
         }
       },
       {
@@ -318,27 +267,17 @@
         category: "LUXURY COMMERCE • ATLAS LOGISTICS",
         title: "Anis Phone Prestige",
         titleAccent: "Atlas Delivery 58 Wilayas",
-        subtitle: "Storefront mobile pour appareils haut de gamme couplé au hub logistique national et agent vocal de confirmation d'expédition.",
-        tech: ["Next.js 15", "Interactive Algeria Map", "Twilio Voice", "Zustand"],
-        draw: (ctx, t, w, h) => {
-          const cx = w / 2;
-          const cy = h / 2;
-          const floatY = Math.sin(t * 0.002) * 15;
-          ctx.save();
-          ctx.translate(cx, cy + floatY);
-          ctx.fillStyle = "#0a0a14";
-          ctx.strokeStyle = "#c5a059";
-          ctx.lineWidth = 4;
-          const pw = 240, ph = 460, pr = 38;
-          ctx.beginPath();
-          ctx.roundRect(-pw/2, -ph/2, pw, ph, pr);
-          ctx.fill();
-          ctx.stroke();
-          ctx.fillStyle = "rgba(197, 160, 89, 0.08)";
-          ctx.beginPath();
-          ctx.roundRect(-pw/2 + 10, -ph/2 + 10, pw - 20, ph - 20, pr - 8);
-          ctx.fill();
-          ctx.restore();
+        subtitle: "Storefront mobile pour smartphones haut de gamme couplé au hub logistique national et configurateur 3D temps réel Three.js.",
+        tech: ["Next.js 16", "Interactive 3D Three.js", "58 Wilayas COD", "Supabase SSR"],
+        imageSrc: "/projects/anis-phone-render.jpg",
+        draw: (ctx, t, w, h, img) => {
+          if (img && img.complete && img.naturalWidth > 0) {
+            const scale = 1.06 + Math.sin(t * 0.0006) * 0.04;
+            const iw = w * scale, ih = h * scale;
+            ctx.drawImage(img, (w - iw) / 2, (h - ih) / 2, iw, ih);
+            ctx.fillStyle = "rgba(6, 6, 16, 0.22)";
+            ctx.fillRect(0, 0, w, h);
+          }
         }
       },
       {
@@ -348,15 +287,69 @@
         titleAccent: "Riviera & Marina ERP",
         subtitle: "Système de conciergerie et d'amarrage pour resorts 5 étoiles, superyachts et domaines privés. Télémétrie météo et facturation automatisée.",
         tech: ["NestJS Enterprise", "Prisma ORM", "Docker Microservices", "Tailwind v4"],
-        draw: (ctx, t, w, h) => {
-          const cx = w / 2;
-          const cy = h / 2 + 80;
-          ctx.strokeStyle = "#c5a059";
-          ctx.lineWidth = 3;
-          ctx.beginPath();
-          ctx.moveTo(cx - 260, cy); ctx.lineTo(cx - 180, cy - 80); ctx.lineTo(cx + 160, cy - 80); ctx.lineTo(cx + 280, cy);
-          ctx.closePath();
-          ctx.stroke();
+        imageSrc: "/projects/resort-os-render.jpg",
+        draw: (ctx, t, w, h, img) => {
+          if (img && img.complete && img.naturalWidth > 0) {
+            const scale = 1.05 + Math.sin(t * 0.0004) * 0.05;
+            const iw = w * scale, ih = h * scale;
+            ctx.drawImage(img, (w - iw) / 2, (h - ih) / 2, iw, ih);
+            ctx.fillStyle = "rgba(6, 6, 16, 0.25)";
+            ctx.fillRect(0, 0, w, h);
+          }
+        }
+      },
+      {
+        id: "commercia",
+        category: "RETAIL TECH • HARDWARE POS",
+        title: "Commercia POS",
+        titleAccent: "Sales Hub Algeria",
+        subtitle: "Système POS de caisse et CRM omnicanal avec synchronisation temps réel, persistance locale SQLite et pilotes ESC/POS thermiques natifs.",
+        tech: ["React 19", "ESC/POS Thermal", "Offline SQLite", "Capacitor Mobile"],
+        imageSrc: "/projects/commercia-render.jpg",
+        draw: (ctx, t, w, h, img) => {
+          if (img && img.complete && img.naturalWidth > 0) {
+            const scale = 1.05 + Math.sin(t * 0.0005) * 0.04;
+            const iw = w * scale, ih = h * scale;
+            ctx.drawImage(img, (w - iw) / 2, (h - ih) / 2, iw, ih);
+            ctx.fillStyle = "rgba(6, 6, 16, 0.24)";
+            ctx.fillRect(0, 0, w, h);
+          }
+        }
+      },
+      {
+        id: "nexus-horizon",
+        category: "ENTERPRISE • SOVEREIGN OS",
+        title: "Nexus Horizon ERP",
+        titleAccent: "Sovereign Desktop Suite",
+        subtitle: "Système d'exploitation d'entreprise souverain pour environnement desktop : modules isolés, base relationnelle locale et hub décentralisé.",
+        tech: ["Electron", "Express v5", "Prisma ORM", "PostgreSQL Enclave"],
+        imageSrc: "/projects/nexus-horizon-render.jpg",
+        draw: (ctx, t, w, h, img) => {
+          if (img && img.complete && img.naturalWidth > 0) {
+            const scale = 1.04 + Math.sin(t * 0.0004) * 0.04;
+            const iw = w * scale, ih = h * scale;
+            ctx.drawImage(img, (w - iw) / 2, (h - ih) / 2, iw, ih);
+            ctx.fillStyle = "rgba(6, 6, 16, 0.25)";
+            ctx.fillRect(0, 0, w, h);
+          }
+        }
+      },
+      {
+        id: "menuflow",
+        category: "FINE DINING • DIGITAL CONCIERGE",
+        title: "MenuFlow AI",
+        titleAccent: "Gourmet QR & Floorplan",
+        subtitle: "Système d'exploitation gastronomique et réservation intelligente pour établissements de haute cuisine : menu QR dynamique et dispatch cuisine.",
+        tech: ["Next.js 15", "Supabase", "Twilio SMS", "Paperless Kitchen HUD"],
+        imageSrc: "/projects/menuflow-render.jpg",
+        draw: (ctx, t, w, h, img) => {
+          if (img && img.complete && img.naturalWidth > 0) {
+            const scale = 1.05 + Math.sin(t * 0.0005) * 0.05;
+            const iw = w * scale, ih = h * scale;
+            ctx.drawImage(img, (w - iw) / 2, (h - ih) / 2, iw, ih);
+            ctx.fillStyle = "rgba(6, 6, 16, 0.24)";
+            ctx.fillRect(0, 0, w, h);
+          }
         }
       }
     ];
