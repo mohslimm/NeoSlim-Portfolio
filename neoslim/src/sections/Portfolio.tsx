@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from '../contexts/I18nContext';
-import { ExternalLink, Star, ArrowUpRight } from 'lucide-react';
+import { Star, ArrowUpRight } from 'lucide-react';
 import { preloadProjectsPage } from '../lib/preload';
+import { playClick } from '../lib/soundFx';
 
 const MotionLink = motion(Link);
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -33,13 +34,13 @@ export function Portfolio() {
   };
 
   return (
-    <section id="portfolio" className="relative py-32 bg-[#0A0A0B] overflow-hidden">
+    <section id="portfolio" className="relative py-32 bg-[#060610] overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
         <motion.div
           className="absolute top-1/3 right-0 w-[500px] h-[500px] rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(197, 134, 78, 0.08) 0%, transparent 60%)',
+            background: 'radial-gradient(circle, rgba(197, 160, 89, 0.08) 0%, transparent 60%)',
           }}
           animate={{
             scale: [1, 1.2, 1],
@@ -63,7 +64,7 @@ export function Portfolio() {
           transition={{ duration: 1, ease: easeAntigravity }}
         >
           <motion.span
-            className="inline-block font-mono text-sm text-[#C5864E] tracking-widest uppercase mb-4"
+            className="inline-block badge-luxury mb-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -71,11 +72,13 @@ export function Portfolio() {
           >
             {t('portfolio.subtitle') as string}
           </motion.span>
-          <h2 className="font-serif text-5xl md:text-7xl font-bold text-[#F2F2F2] mb-6">
+          <h2 className="font-serif text-5xl md:text-7xl font-bold text-[#f0ede8] mb-6">
             {t('portfolio.title') as string}{' '}
-            <span className="italic gradient-text">Sélection</span>
+            <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#f0ede8] via-[#e8c77a] to-[#c5a059]">
+              Sélection
+            </span>
           </h2>
-          <p className="text-[#A1A1AA] text-lg max-w-2xl mx-auto">
+          <p className="text-[#f0ede8]/70 text-base md:text-lg max-w-2xl mx-auto font-light leading-relaxed">
             {t('portfolio.description') as string}
           </p>
         </motion.div>
@@ -91,7 +94,10 @@ export function Portfolio() {
           {filters.map((filter) => (
             <motion.button
               key={filter.key}
-              onClick={() => setActiveFilter(filter.key)}
+              onClick={() => {
+                playClick();
+                setActiveFilter(filter.key);
+              }}
               className={`px-5 py-2.5 rounded-full text-xs font-mono tracking-wider transition-all duration-300 border ${
                 activeFilter === filter.key
                   ? 'bg-[#c5a059]/20 border-[#c5a059] text-[#e8c77a] shadow-[0_0_20px_rgba(197,160,89,0.2)]'
@@ -192,6 +198,7 @@ export function Portfolio() {
                       {/* View Project Link */}
                       <Link
                         to={`/projects/${project.id}`}
+                        onClick={playClick}
                         className="inline-flex items-center justify-between w-full px-4 py-2.5 rounded-xl text-xs font-medium text-[#f0ede8] bg-white/[0.03] hover:bg-[#c5a059] hover:text-[#060610] border border-white/10 hover:border-[#c5a059] transition-all duration-300 group/link"
                         onMouseEnter={preloadProjectsPage}
                       >
@@ -216,16 +223,20 @@ export function Portfolio() {
         >
           <MotionLink
             to="/projects"
-            className="inline-flex items-center gap-3 px-8 py-4 glass-card rounded-full text-[#F2F2F2] hover:border-[#C5864E]/50 transition-colors group"
+            onClick={playClick}
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-full text-xs font-mono font-semibold tracking-wider bg-gradient-to-r from-[#B8924A] via-[#c5a059] to-[#D4B57A] text-[#1A1200] shadow-[0_4px_25px_rgba(197,160,89,0.3)] hover:scale-105 active:scale-95 transition-all group"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onMouseEnter={preloadProjectsPage}
           >
-            <span className="font-medium">Voir tous les projets</span>
-            <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <span>{language === 'fr' ? 'Explorer les 26 Réalisations' : 'Explore All 26 Architectures'}</span>
+            <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           </MotionLink>
         </motion.div>
       </div>
     </section>
   );
 }
+
+Portfolio.displayName = 'Portfolio';
+

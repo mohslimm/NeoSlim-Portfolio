@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#060610"/>
+      <stop offset="50%" stop-color="#0a0a18"/>
+      <stop offset="100%" stop-color="#05050e"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8c77a"/>
+      <stop offset="50%" stop-color="#c5a059"/>
+      <stop offset="100%" stop-color="#967434"/>
+    </linearGradient>
+    <radialGradient id="tradeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(197, 160, 89, 0.22)"/>
+      <stop offset="100%" stop-color="rgba(197, 160, 89, 0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="800" rx="32" fill="url(#bg)"/>
+  <circle cx="400" cy="400" r="320" fill="url(#tradeGlow)"/>
+
+  <!-- Subtle Blueprint Tech Circles -->
+  <g opacity="0.15" stroke="url(#gold)" stroke-width="1">
+    <circle cx="400" cy="400" r="280" fill="none" stroke-dasharray="6,4"/>
+    <circle cx="400" cy="400" r="210" fill="none"/>
+    <circle cx="400" cy="400" r="140" fill="none" stroke-dasharray="2,6"/>
+  </g>
+
+  <!-- Candlestick Chart Pattern + Risk Shield Crest -->
+  <g transform="translate(400, 380)">
+    <!-- Shield Outline Behind Candlesticks -->
+    <path d="M0,-190 L160,-100 L160,50 Q160,180 0,240 Q-160,180 -160,50 L-160,-100 Z" fill="rgba(197, 160, 89, 0.05)" stroke="url(#gold)" stroke-width="2.2"/>
+
+    <!-- Candlesticks in foreground -->
+    <!-- Candle 1 (Green) -->
+    <line x1="-100" y1="-120" x2="-100" y2="60" stroke="#22c55e" stroke-width="2"/>
+    <rect x="-112" y="-90" width="24" height="110" fill="#22c55e" rx="3"/>
+
+    <!-- Candle 2 (Red) -->
+    <line x1="-50" y1="-70" x2="-50" y2="90" stroke="#ef4444" stroke-width="2"/>
+    <rect x="-62" y="-40" width="24" height="80" fill="#ef4444" rx="3"/>
+
+    <!-- Candle 3 (Green) -->
+    <line x1="0" y1="-150" x2="0" y2="30" stroke="#22c55e" stroke-width="2"/>
+    <rect x="-12" y="-120" width="24" height="120" fill="#22c55e" rx="3"/>
+
+    <!-- Candle 4 (Green) -->
+    <line x1="50" y1="-180" x2="50" y2="-30" stroke="#22c55e" stroke-width="2"/>
+    <rect x="38" y="-155" width="24" height="90" fill="#22c55e" rx="3"/>
+
+    <!-- Candle 5 (Gold Accent) -->
+    <line x1="100" y1="-160" x2="100" y2="-60" stroke="#c5a059" stroke-width="2"/>
+    <rect x="88" y="-135" width="24" height="50" fill="#c5a059" rx="3"/>
+
+    <!-- Golden EMA Trajectory Line -->
+    <path d="M-130,30 Q-70,-30 0,-105 T130,-170" fill="none" stroke="url(#gold)" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="130" cy="-170" r="5" fill="#e8c77a"/>
+  </g>
+
+  <!-- Clean Floating Holographic Badge at Bottom -->
+  <g transform="translate(260, 680)">
+    <rect x="0" y="0" width="280" height="36" rx="18" fill="rgba(197, 160, 89, 0.12)" stroke="url(#gold)" stroke-width="1"/>
+    <text x="140" y="23" text-anchor="middle" fill="#c5a059" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="600" letter-spacing="2">
+      HIGH-FREQUENCY RISK SHIELD
+    </text>
+  </g>
+</svg>

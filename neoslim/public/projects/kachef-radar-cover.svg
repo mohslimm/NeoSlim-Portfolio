@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#060610"/>
+      <stop offset="50%" stop-color="#080816"/>
+      <stop offset="100%" stop-color="#05050e"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8c77a"/>
+      <stop offset="50%" stop-color="#c5a059"/>
+      <stop offset="100%" stop-color="#967434"/>
+    </linearGradient>
+    <radialGradient id="radarSweep" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(197, 160, 89, 0.4)"/>
+      <stop offset="70%" stop-color="rgba(197, 160, 89, 0.08)"/>
+      <stop offset="100%" stop-color="rgba(197, 160, 89, 0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="800" rx="32" fill="url(#bg)"/>
+
+  <!-- Radar Grid Circles -->
+  <g transform="translate(400, 380)">
+    <circle cx="0" cy="0" r="240" fill="none" stroke="rgba(197, 160, 89, 0.15)" stroke-width="1.2"/>
+    <circle cx="0" cy="0" r="170" fill="none" stroke="rgba(197, 160, 89, 0.25)" stroke-width="1.2" stroke-dasharray="6,4"/>
+    <circle cx="0" cy="0" r="100" fill="none" stroke="rgba(197, 160, 89, 0.4)" stroke-width="1.5"/>
+    <circle cx="0" cy="0" r="40" fill="rgba(197, 160, 89, 0.1)" stroke="url(#gold)" stroke-width="2"/>
+
+    <!-- Crosshairs -->
+    <line x1="-260" y1="0" x2="260" y2="0" stroke="rgba(197, 160, 89, 0.2)" stroke-width="1"/>
+    <line x1="0" y1="-260" x2="0" y2="260" stroke="rgba(197, 160, 89, 0.2)" stroke-width="1"/>
+
+    <!-- Radar Sector Beam -->
+    <path d="M0,0 L170,-170 A240,240 0 0,0 0,-240 Z" fill="url(#radarSweep)"/>
+
+    <!-- Detected Target Blips -->
+    <circle cx="85" cy="-95" r="5" fill="#22c55e"/>
+    <circle cx="85" cy="-95" r="12" fill="none" stroke="#22c55e" stroke-width="1" opacity="0.6"/>
+
+    <circle cx="-120" cy="60" r="4" fill="#c5a059"/>
+    <circle cx="-120" cy="60" r="10" fill="none" stroke="#c5a059" stroke-width="1" opacity="0.5"/>
+
+    <circle cx="140" cy="110" r="5" fill="#22c55e"/>
+    <circle cx="-50" cy="-140" r="4" fill="#ef4444"/>
+    <circle cx="-50" cy="-140" r="10" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.6"/>
+  </g>
+
+  <!-- Clean Floating Holographic Badge at Bottom -->
+  <g transform="translate(260, 680)">
+    <rect x="0" y="0" width="280" height="36" rx="18" fill="rgba(197, 160, 89, 0.12)" stroke="url(#gold)" stroke-width="1"/>
+    <text x="140" y="23" text-anchor="middle" fill="#c5a059" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="600" letter-spacing="2">
+      B2B SALES &amp; RISK RADAR
+    </text>
+  </g>
+</svg>

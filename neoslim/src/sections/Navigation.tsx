@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from '../contexts/I18nContext';
-import { Menu, X, Globe } from 'lucide-react';
+import { Menu, X, Globe, Volume2, VolumeX } from 'lucide-react';
+import { toggleSound, getSoundStatus, playClick } from '../lib/soundFx';
 
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -11,6 +12,7 @@ const navLinks = [
   { label: 'nav.skills', href: '#skills' },
   { label: 'nav.portfolio', href: '#portfolio' },
   { label: 'nav.niches', href: '#niches' },
+  { label: 'nav.simulator', href: '#simulator' },
   { label: 'nav.contact', href: '#contact' },
 ];
 
@@ -18,6 +20,7 @@ export function Navigation() {
   const { t, toggleLanguage, language } = useI18n();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [soundOn, setSoundOn] = useState(getSoundStatus());
 
   useEffect(() => {
     const handleScroll = () => {
@@ -66,11 +69,12 @@ export function Navigation() {
             </motion.a>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-7">
+            <nav className="hidden md:flex items-center gap-6">
               {navLinks.map((link, index) => (
                 <motion.a
                   key={link.href}
                   href={link.href}
+                  onClick={playClick}
                   className="nav-link text-xs font-mono tracking-wider text-[#f0ede8]/70 hover:text-[#f0ede8] transition-colors py-1"
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -82,10 +86,35 @@ export function Navigation() {
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
+              {/* Sound FX Toggle Pill */}
+              <motion.button
+                onClick={() => {
+                  const next = toggleSound();
+                  setSoundOn(next);
+                }}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-mono bg-white/[0.04] border border-white/10 hover:border-[#c5a059]/50 text-[#f0ede8] hover:text-[#e8c77a] transition-all"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                title={soundOn ? 'Acoustic FX: ON (Click to mute)' : 'Acoustic FX: MUTED (Click to unmute)'}
+                aria-label={soundOn ? 'Mute acoustic FX' : 'Enable acoustic FX'}
+              >
+                {soundOn ? (
+                  <Volume2 className="w-3.5 h-3.5 text-[#c5a059]" />
+                ) : (
+                  <VolumeX className="w-3.5 h-3.5 text-[#f0ede8]/40" />
+                )}
+                <span className="font-semibold tracking-wider text-[10px] hidden sm:inline text-[#f0ede8]/70">
+                  {soundOn ? 'SFX' : 'MUTE'}
+                </span>
+              </motion.button>
+
               {/* Language Toggle Pill */}
               <motion.button
-                onClick={toggleLanguage}
+                onClick={() => {
+                  playClick();
+                  toggleLanguage();
+                }}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono bg-white/[0.04] border border-white/10 hover:border-[#c5a059]/50 text-[#f0ede8] hover:text-[#e8c77a] transition-all"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -98,6 +127,7 @@ export function Navigation() {
               {/* Contact Direct CTA Button */}
               <motion.a
                 href="#contact"
+                onClick={playClick}
                 className="hidden lg:inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-[#B8924A] via-[#c5a059] to-[#D4B57A] text-[#1A1200] hover:scale-105 active:scale-95 transition-all shadow-[0_2px_12px_rgba(197,160,89,0.3)]"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -107,7 +137,10 @@ export function Navigation() {
 
               {/* Mobile Menu Button */}
               <motion.button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                onClick={() => {
+                  playClick();
+                  setIsMobileMenuOpen(!isMobileMenuOpen);
+                }}
                 className="md:hidden p-2 rounded-full text-[#f0ede8] bg-white/[0.05] border border-white/10 hover:border-[#c5a059]/40 transition-colors"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -167,3 +200,5 @@ export function Navigation() {
     </>
   );
 }
+
+Navigation.displayName = 'Navigation';

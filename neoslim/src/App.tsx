@@ -10,7 +10,11 @@ import { Skills } from './sections/Skills';
 import { DataViz } from './sections/DataViz';
 import { Portfolio } from './sections/Portfolio';
 import { NichePackShowcase } from './sections/NichePackShowcase';
+import { ArchitectureSimulator } from './sections/ArchitectureSimulator';
 import { Footer } from './sections/Footer';
+import { ClientMarquee } from './components/ClientMarquee';
+import { SpotlightAura } from './components/SpotlightAura';
+import { ArchitectureConsole } from './components/ArchitectureConsole';
 import { lazy, Suspense } from 'react';
 import './App.css';
 
@@ -132,14 +136,16 @@ function CustomCursor() {
 // Main Page Component
 function MainPage() {
   return (
-    <main className="relative w-full overflow-x-hidden bg-[#0A0A0B]">
+    <main className="relative w-full overflow-x-hidden bg-[#060610]">
       <Navigation />
       <Hero />
+      <ClientMarquee />
       <ProjectCubeShowcase />
       <Skills />
       <DataViz />
       <Portfolio />
       <NichePackShowcase />
+      <ArchitectureSimulator />
       <Footer />
     </main>
   );
@@ -152,9 +158,9 @@ function ProtectedAdminRoute() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center">
+      <div className="min-h-screen bg-[#060610] flex items-center justify-center">
         <motion.div
-          className="w-12 h-12 border-2 border-[#C5864E] border-t-transparent rounded-full"
+          className="w-12 h-12 border-2 border-[#c5a059] border-t-transparent rounded-full"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />
@@ -180,6 +186,7 @@ function AppContent() {
         <Route path="/projects/:id" element={<ProjectsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <ArchitectureConsole />
     </Router>
   );
 }
@@ -188,7 +195,7 @@ function AppContent() {
 function App() {
   useEffect(() => {
     // Set document title and meta
-    document.title = 'Mohamed Slimani | Senior Full-Stack Developer';
+    document.title = 'Mohamed Slimani | Senior Full-Stack Developer & AI Systems Architect';
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(
@@ -201,6 +208,7 @@ function App() {
   return (
     <I18nProvider>
       <AuthProvider>
+        <SpotlightAura />
         <GrainOverlay />
         <ScrollProgress />
         <CustomCursor />
