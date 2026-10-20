@@ -9,7 +9,8 @@ import { playClick } from '../lib/soundFx';
 const MotionLink = motion(Link);
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-import { allProjects, type ProjectCategory } from '../data/projectsData';
+import { useProjectStore } from '../stores/useProjectStore';
+import type { ProjectCategory } from '../data/projectsData';
 
 const filters: { key: ProjectCategory; label: string }[] = [
   { key: 'all', label: 'Tous' },
@@ -22,11 +23,12 @@ const filters: { key: ProjectCategory; label: string }[] = [
 export function Portfolio() {
   const { t, language } = useI18n();
   const [activeFilter, setActiveFilter] = useState<ProjectCategory>('all');
+  const projects = useProjectStore((s) => s.projects);
 
   const filteredProjects =
     activeFilter === 'all'
-      ? allProjects
-      : allProjects.filter((p) => p.category === activeFilter);
+      ? projects
+      : projects.filter((p) => p.category === activeFilter);
 
   const getFilterLabel = (key: ProjectCategory) => {
     if (key === 'all') return (t('portfolio.filters.all') as string) || 'Tous';

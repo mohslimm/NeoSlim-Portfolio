@@ -3,7 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Star, Filter, ArrowUpRight, X, Globe, Search, ShieldCheck, Zap } from 'lucide-react';
 import { useI18n } from '../contexts/I18nContext';
-import { allProjects, type ProjectCategory } from '../data/projectsData';
+import { useProjectStore } from '../stores/useProjectStore';
+import type { ProjectCategory } from '../data/projectsData';
 import { playClick, playChime, playSubtleThud } from '../lib/soundFx';
 
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -42,7 +43,9 @@ export function ProjectsPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  const unifiedProjects: UnifiedProject[] = useMemo(() => allProjects.map((p) => ({
+  const projects = useProjectStore((s) => s.projects);
+
+  const unifiedProjects: UnifiedProject[] = useMemo(() => projects.map((p) => ({
     id: p.id,
     title: p.title,
     description: language === 'fr' ? p.descriptionFr : p.descriptionEn,

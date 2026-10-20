@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useI18n } from '../contexts/I18nContext';
-import { Github, Linkedin, Twitter, Mail, ArrowUpRight, Heart } from 'lucide-react';
+import { Github, Linkedin, Twitter, Mail, ArrowUpRight, Heart, Lock } from 'lucide-react';
 
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -221,9 +221,18 @@ export function Footer() {
               <p className="text-sm text-[#A1A1AA] flex items-center gap-1">
                 © {new Date().getFullYear()} Mohamed Slimani. {t('footer.rights') as string}
               </p>
-              <p className="text-sm text-[#A1A1AA] flex items-center gap-1">
-                Fait avec <Heart className="w-4 h-4 text-[#C5864E] fill-[#C5864E]" /> à Montréal
-              </p>
+              <div className="flex items-center gap-6">
+                <a
+                  href="/admin"
+                  className="text-xs font-mono text-[#c5a059]/60 hover:text-[#c5a059] transition-colors flex items-center gap-1.5"
+                >
+                  <Lock className="w-3 h-3 text-[#c5a059]" />
+                  <span>Console Direction</span>
+                </a>
+                <p className="text-sm text-[#A1A1AA] flex items-center gap-1">
+                  Fait avec <Heart className="w-4 h-4 text-[#C5864E] fill-[#C5864E]" /> à Montréal
+                </p>
+              </div>
             </div>
           </div>
         </div>

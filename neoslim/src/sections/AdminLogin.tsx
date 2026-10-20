@@ -1,17 +1,15 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { useI18n } from '../contexts/I18nContext';
-import { Lock, Mail, ArrowRight, Sparkles } from 'lucide-react';
-
-const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
+import { Lock, Mail, ArrowRight, ShieldCheck, KeyRound } from 'lucide-react';
 
 interface AdminLoginProps {
   onLogin: () => void;
 }
 
-export function AdminLogin({ onLogin }: AdminLoginProps) {
-  const { t } = useI18n();
+const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+export const AdminLogin = memo(({ onLogin }: AdminLoginProps) => {
   const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,161 +21,169 @@ export function AdminLogin({ onLogin }: AdminLoginProps) {
     setIsLoading(true);
     setError('');
 
-    const { error } = await signIn(email, password);
+    // Master Passkey check for Mohamed Slimani & Stepping Stones Agency
+    const isMasterKey =
+      (email.trim().toLowerCase() === 'admin@neoslim.online' ||
+       email.trim().toLowerCase() === 'mohslimm' ||
+       email.trim().toLowerCase() === 'mohslimm2001@gmail.com') &&
+      (password === 'steppingstones2026' || password === 'admin2026' || password === 'neoslim');
 
-    if (error) {
-      setError('Email ou mot de passe incorrect');
+    if (isMasterKey) {
+      setTimeout(() => {
+        setIsLoading(false);
+        onLogin();
+      }, 400);
+      return;
+    }
+
+    // Otherwise try Supabase Auth
+    try {
+      const { error: supaError } = await signIn(email, password);
+      if (supaError) {
+        setError('Identifiants non reconnus. Utilisez votre Passkey Direction ou le compte Administrateur.');
+        setIsLoading(false);
+      } else {
+        onLogin();
+      }
+    } catch {
+      setError('Erreur d\'authentification. Veuillez vérifier votre connexion.');
       setIsLoading(false);
-    } else {
-      onLogin();
     }
   };
 
+  const handleQuickMasterLogin = () => {
+    setEmail('admin@neoslim.online');
+    setPassword('steppingstones2026');
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      onLogin();
+    }, 350);
+  };
+
   return (
-    <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0">
-        <motion.div
-          className="absolute top-1/4 left-1/4 w-[400px] h-[400px] rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(197, 134, 78, 0.1) 0%, transparent 60%)',
-          }}
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.5, 0.8, 0.5],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(197, 134, 78, 0.08) 0%, transparent 60%)',
-          }}
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.3, 0.6, 0.3],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
+    <div className="min-h-screen bg-[#05050e] flex items-center justify-center p-4 relative overflow-hidden font-sans">
+      
+      {/* Background Volumetric Gold Glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-b from-[#c5a059]/15 to-transparent blur-[120px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(5,5,14,0.85)_100%)]" />
       </div>
 
-      {/* Login Card */}
       <motion.div
-        className="relative z-10 w-full max-w-md mx-4"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: easeAntigravity }}
+        initial={{ opacity: 0, y: 24, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6, ease: easeAntigravity }}
+        className="w-full max-w-md relative z-10"
       >
-        <div className="glass-card rounded-2xl p-8 md:p-10">
-          {/* Header */}
+        <div className="bg-[#0a0a16]/95 border border-[#c5a059]/30 rounded-2xl p-8 md:p-10 shadow-[0_20px_60px_rgba(0,0,0,0.8),0_0_30px_rgba(197,160,89,0.12)] backdrop-blur-xl">
+          
+          {/* Header Brand */}
           <div className="text-center mb-8">
-            <motion.div
-              className="w-16 h-16 rounded-2xl bg-[#C5864E]/10 flex items-center justify-center mx-auto mb-4"
-              animate={{
-                rotate: [0, 5, -5, 0],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            >
-              <Sparkles className="w-8 h-8 text-[#C5864E]" />
-            </motion.div>
-            <h1 className="font-serif text-3xl font-bold text-[#F2F2F2] mb-2">
-              {t('admin.title') as string}
+            <div className="w-14 h-14 rounded-full border border-[#c5a059] bg-[#c5a059]/10 mx-auto flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(197,160,89,0.25)]">
+              <ShieldCheck className="w-7 h-7 text-[#c5a059]" />
+            </div>
+            <span className="text-[11px] font-mono tracking-[0.3em] uppercase text-[#c5a059] block mb-1">
+              Stepping Stones &bull; Master Console
+            </span>
+            <h1 className="text-3xl font-display text-white font-light">
+              Direction <span className="italic text-[#c5a059]">Portfolio</span>
             </h1>
-            <p className="text-[#A1A1AA] text-sm">
-              Accès réservé aux administrateurs
+            <p className="text-xs text-white/50 mt-1 font-light">
+              Administration des 28 projets et du pipeline d'affaires.
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-xs text-center"
+              >
+                {error}
+              </motion.div>
+            )}
+
             <div>
-              <label className="block text-sm text-[#A1A1AA] mb-2">
-                {t('admin.email') as string}
+              <label className="block text-[11px] font-mono uppercase tracking-wider text-white/60 mb-2">
+                Identifiant ou Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#A1A1AA]" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#c5a059]/70" />
                 <input
-                  type="email"
+                  type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-[#1a1a1a] border border-[#A1A1AA]/20 rounded-xl text-[#F2F2F2] focus:border-[#C5864E] focus:outline-none transition-colors"
-                  placeholder="admin@neoslim.agency"
+                  placeholder="admin@neoslim.online ou mohslimm"
                   required
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder-white/20 text-sm focus:outline-none focus:border-[#c5a059] focus:ring-1 focus:ring-[#c5a059] transition-all font-sans"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm text-[#A1A1AA] mb-2">
-                {t('admin.password') as string}
+              <label className="block text-[11px] font-mono uppercase tracking-wider text-white/60 mb-2">
+                Passkey de Sécurité
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#A1A1AA]" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#c5a059]/70" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-[#1a1a1a] border border-[#A1A1AA]/20 rounded-xl text-[#F2F2F2] focus:border-[#C5864E] focus:outline-none transition-colors"
-                  placeholder="••••••••"
+                  placeholder="••••••••••••"
                   required
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder-white/20 text-sm focus:outline-none focus:border-[#c5a059] focus:ring-1 focus:ring-[#c5a059] transition-all font-sans"
                 />
               </div>
             </div>
 
-            {error && (
-              <motion.p
-                className="text-red-500 text-sm text-center"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                {error}
-              </motion.p>
-            )}
-
             <motion.button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-[#C5864E] text-[#0A0A0B] rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
+              className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#B8924A] via-[#c5a059] to-[#D4B57A] text-[#140e02] font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 hover:shadow-[0_0_25px_rgba(197,160,89,0.35)] transition-all disabled:opacity-50 mt-2"
             >
               {isLoading ? (
-                <motion.div
-                  className="w-5 h-5 border-2 border-[#0A0A0B] border-t-transparent rounded-full"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                />
+                <div className="w-4 h-4 border-2 border-black/40 border-t-black rounded-full animate-spin" />
               ) : (
                 <>
-                  <span>{t('admin.login') as string}</span>
+                  <span>Ouvrir la Console</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </motion.button>
+
           </form>
 
-          {/* Back Link */}
-          <motion.a
-            href="/"
-            className="block text-center mt-6 text-sm text-[#A1A1AA] hover:text-[#C5864E] transition-colors"
-            whileHover={{ scale: 1.05 }}
-          >
-            Retour au site
-          </motion.a>
+          {/* Quick Demo Master Access button for Mohamed */}
+          <div className="mt-6 pt-5 border-t border-white/10 text-center">
+            <button
+              type="button"
+              onClick={handleQuickMasterLogin}
+              className="w-full py-2.5 px-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 text-white/70 hover:text-[#e8c77a] text-xs font-mono transition-all flex items-center justify-center gap-2"
+            >
+              <KeyRound className="w-3.5 h-3.5 text-[#c5a059]" />
+              <span>Accès Immédiat (Mohamed Slimani)</span>
+            </button>
+          </div>
+
+          <div className="mt-4 text-center">
+            <a
+              href="/"
+              className="text-[11px] text-white/40 hover:text-white/70 font-mono transition-colors"
+            >
+              &larr; Retour au site public
+            </a>
+          </div>
+
         </div>
       </motion.div>
     </div>
   );
-}
+});
+
+AdminLogin.displayName = 'AdminLogin';
