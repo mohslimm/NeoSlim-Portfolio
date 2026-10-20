@@ -1,16 +1,16 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from '../contexts/I18nContext';
-import { Star, ArrowUpRight } from 'lucide-react';
-import { preloadProjectsPage } from '../lib/preload';
 import { playClick } from '../lib/soundFx';
+import { ArrowUpRight } from 'lucide-react';
+import { preloadProjectsPage } from '../lib/preload';
+import { AwwwardsProjectCard } from '../components/AwwwardsProjectCard';
+import { useProjectStore } from '../stores/useProjectStore';
+import type { ProjectCategory } from '../data/projectsData';
 
 const MotionLink = motion(Link);
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
-
-import { useProjectStore } from '../stores/useProjectStore';
-import type { ProjectCategory } from '../data/projectsData';
 
 const filters: { key: ProjectCategory; label: string }[] = [
   { key: 'all', label: 'Tous' },
@@ -25,14 +25,23 @@ export function Portfolio() {
   const [activeFilter, setActiveFilter] = useState<ProjectCategory>('all');
   const projects = useProjectStore((s) => s.projects);
 
-  const filteredProjects =
-    activeFilter === 'all'
+  const filteredProjects = useMemo(() => {
+    return activeFilter === 'all'
       ? projects
       : projects.filter((p) => p.category === activeFilter);
+  }, [projects, activeFilter]);
+
+  const getFilterCount = (key: ProjectCategory) => {
+    if (key === 'all') return projects.length;
+    return projects.filter((p) => p.category === key).length;
+  };
 
   const getFilterLabel = (key: ProjectCategory) => {
-    if (key === 'all') return (t('portfolio.filters.all') as string) || 'Tous';
-    return (t(`portfolio.filters.${key}`) as string) || key;
+    const baseLabel =
+      key === 'all'
+        ? (t('portfolio.filters.all') as string) || 'Tous'
+        : (t(`portfolio.filters.${key}`) as string) || key;
+    return `${baseLabel} (${getFilterCount(key)})`;
   };
 
   return (
@@ -120,97 +129,13 @@ export function Portfolio() {
         >
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, index) => (
-              <motion.article
+              <AwwwardsProjectCard
                 key={project.id}
-                layout
-                initial={{ opacity: 0, scale: 0.92, y: 40 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.92, y: -20 }}
-                transition={{
-                  duration: 0.55,
-                  ease: easeAntigravity,
-                  delay: index * 0.06,
-                }}
-                className="group relative"
-              >
-                <div className="luxury-card rounded-2xl overflow-hidden h-full flex flex-col bg-[#0a0a14]/75 border border-white/[0.08] hover:border-[#c5a059]/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_30px_rgba(197,160,89,0.14)] transition-all duration-500">
-                  {/* Image Container */}
-                  <div className="relative aspect-[16/10] overflow-hidden bg-[#14142a]">
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#060610] via-black/20 to-transparent z-10 pointer-events-none" />
-                    <motion.img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-full object-cover group-hover:scale-106 transition-transform duration-700 ease-out"
-                      loading="lazy"
-                    />
-
-                    {/* Antigravity Score Badge */}
-                    <div className="absolute top-3.5 right-3.5 z-20 flex items-center gap-1 px-3 py-1 rounded-full bg-[#060610]/80 border border-[#c5a059]/40 backdrop-blur-md">
-                      <Star className="w-3 h-3 text-[#e8c77a] fill-[#e8c77a]" />
-                      <span className="font-mono text-xs font-bold text-[#e8c77a]">
-                        {project.antigravityScore}
-                      </span>
-                    </div>
-
-                    {/* Year & Category Badge */}
-                    <div className="absolute top-3.5 left-3.5 z-20 flex items-center gap-2">
-                      <span className="font-mono text-[10px] text-[#f0ede8]/80 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10">
-                        {project.year}
-                      </span>
-                      {project.isNichePack && (
-                        <span className="font-mono text-[9px] text-[#c5a059] px-2 py-0.5 rounded-full bg-[#c5a059]/15 border border-[#c5a059]/30 uppercase">
-                          Niche
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-6 flex-1 flex flex-col justify-between">
-                    <div>
-                      <span className="font-mono text-[10px] text-[#c5a059] uppercase tracking-widest block mb-1.5">
-                        {project.category}
-                      </span>
-                      <h3 className="font-serif text-2xl font-bold text-[#f0ede8] mb-2 group-hover:text-[#c5a059] transition-colors leading-snug">
-                        {project.title}
-                      </h3>
-                      <p className="text-[#f0ede8]/70 text-xs leading-relaxed mb-4 flex-1 line-clamp-2">
-                        {language === 'fr' ? project.descriptionFr : project.descriptionEn}
-                      </p>
-                    </div>
-
-                    <div>
-                      {/* Tags */}
-                      <div className="flex flex-wrap gap-1.5 mb-5">
-                        {project.tags.slice(0, 3).map((tag) => (
-                          <span
-                            key={tag}
-                            className="px-2.5 py-0.5 text-[10px] font-mono text-[#f0ede8]/60 bg-white/[0.03] border border-white/5 rounded"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                        {project.tags.length > 3 && (
-                          <span className="px-1.5 py-0.5 text-[10px] font-mono text-[#c5a059] bg-[#c5a059]/10 rounded">
-                            +{project.tags.length - 3}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* View Project Link */}
-                      <Link
-                        to={`/projects/${project.id}`}
-                        onClick={playClick}
-                        className="inline-flex items-center justify-between w-full px-4 py-2.5 rounded-xl text-xs font-medium text-[#f0ede8] bg-white/[0.03] hover:bg-[#c5a059] hover:text-[#060610] border border-white/10 hover:border-[#c5a059] transition-all duration-300 group/link"
-                        onMouseEnter={preloadProjectsPage}
-                      >
-                        <span>{t('portfolio.viewProject') as string}</span>
-                        <ArrowUpRight className="w-3.5 h-3.5 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </motion.article>
+                project={project}
+                index={index}
+                language={language}
+                viewProjectLabel={(t('portfolio.viewProject') as string) || 'Explorer le Système'}
+              />
             ))}
           </AnimatePresence>
         </motion.div>
