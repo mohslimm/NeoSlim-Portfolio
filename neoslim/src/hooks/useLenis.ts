@@ -9,12 +9,17 @@ export function useLenis() {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Initialize Lenis with premium feel settings
+    // Respect reduced motion directive strictly (Awwwards & WCAG AA)
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+
+    // Initialize Lenis with sovereign Quiet Luxury fluid feel
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      touchMultiplier: 2,
+      touchMultiplier: 1.8,
     });
 
     lenisRef.current = lenis;
@@ -22,10 +27,12 @@ export function useLenis() {
     // Connect Lenis to GSAP ScrollTrigger
     lenis.on('scroll', ScrollTrigger.update);
 
-    gsap.ticker.add((time) => {
+    // Single master clock via GSAP ticker
+    const updateTicker = (time: number) => {
       lenis.raf(time * 1000);
-    });
+    };
 
+    gsap.ticker.add(updateTicker);
     gsap.ticker.lagSmoothing(0);
 
     // Handle anchor links with smooth scroll
@@ -38,7 +45,7 @@ export function useLenis() {
         if (targetElement) {
           e.preventDefault();
           lenis.scrollTo(targetElement, {
-            offset: -80,
+            offset: -70,
             duration: 1.2,
           });
         }
@@ -48,11 +55,10 @@ export function useLenis() {
     document.addEventListener('click', handleAnchorClick);
 
     return () => {
-      lenis.destroy();
       document.removeEventListener('click', handleAnchorClick);
-      gsap.ticker.remove((time) => {
-        lenis.raf(time * 1000);
-      });
+      gsap.ticker.remove(updateTicker);
+      lenis.destroy();
+      lenisRef.current = null;
     };
   }, []);
 

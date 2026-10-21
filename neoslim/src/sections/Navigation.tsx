@@ -11,6 +11,7 @@ const navLinks = [
   { label: 'nav.showcase3d', href: '#showcase3d' },
   { label: 'nav.skills', href: '#skills' },
   { label: 'nav.portfolio', href: '#portfolio' },
+  { label: 'nav.dossiers', href: '#dossiers' },
   { label: 'nav.niches', href: '#niches' },
   { label: 'nav.simulator', href: '#simulator' },
   { label: 'nav.contact', href: '#contact' },

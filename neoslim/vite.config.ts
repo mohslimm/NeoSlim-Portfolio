@@ -11,4 +11,17 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-motion': ['framer-motion', 'gsap'],
+          'vendor-icons': ['lucide-react'],
+          'vendor-charts': ['recharts', 'chart.js', 'react-chartjs-2'],
+        },
+      },
+    },
+  },
 });
