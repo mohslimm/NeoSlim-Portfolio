@@ -7,41 +7,52 @@ import { ArrowUpRight } from 'lucide-react';
 import { preloadProjectsPage } from '../lib/preload';
 import { AwwwardsProjectCard } from '../components/AwwwardsProjectCard';
 import { useProjectStore } from '../stores/useProjectStore';
-import type { ProjectCategory } from '../data/projectsData';
 
 const MotionLink = motion(Link);
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-const filters: { key: ProjectCategory; label: string }[] = [
-  { key: 'all', label: 'Tous' },
-  { key: 'development', label: 'Développement SaaS' },
-  { key: 'productivity', label: 'Systèmes ERP' },
-  { key: 'design', label: 'Design & Audits' },
-  { key: 'niches', label: 'Pack Niches Stepping Stones' },
+type FilterMode = 'elite' | 'all' | 'development' | 'productivity' | 'niches';
+
+const filters: { key: FilterMode; labelFr: string; labelEn: string }[] = [
+  { key: 'elite', labelFr: 'Sélection d\'Élite', labelEn: 'Elite Selection' },
+  { key: 'all', labelFr: 'Tous les 30 Systèmes', labelEn: 'All 30 Systems' },
+  { key: 'development', labelFr: 'SaaS & IA', labelEn: 'SaaS & AI' },
+  { key: 'productivity', labelFr: 'ERP & Métier', labelEn: 'ERP & Ops' },
+  { key: 'niches', labelFr: 'Packs Niches', labelEn: 'Niche Packs' },
 ];
 
 export function Portfolio() {
   const { t, language } = useI18n();
-  const [activeFilter, setActiveFilter] = useState<ProjectCategory>('all');
+  const [activeFilter, setActiveFilter] = useState<FilterMode>('elite');
   const projects = useProjectStore((s) => s.projects);
 
   const filteredProjects = useMemo(() => {
-    return activeFilter === 'all'
-      ? projects
-      : projects.filter((p) => p.category === activeFilter);
+    if (activeFilter === 'elite') {
+      // Top 6 flagship systems
+      const flagshipIds = [
+        'el-mouhami-pro',
+        'aegis-alpha-terminal',
+        'gestia-concierge',
+        'kachef-os',
+        'stonelink-sandbox',
+        'anis-phone-atlas',
+      ];
+      const selected = projects.filter((p) => flagshipIds.includes(p.id));
+      return selected.length > 0 ? selected : projects.slice(0, 6);
+    }
+    if (activeFilter === 'all') return projects;
+    return projects.filter((p) => p.category === activeFilter);
   }, [projects, activeFilter]);
 
-  const getFilterCount = (key: ProjectCategory) => {
+  const getFilterCount = (key: FilterMode) => {
+    if (key === 'elite') return 6;
     if (key === 'all') return projects.length;
     return projects.filter((p) => p.category === key).length;
   };
 
-  const getFilterLabel = (key: ProjectCategory) => {
-    const baseLabel =
-      key === 'all'
-        ? (t('portfolio.filters.all') as string) || 'Tous'
-        : (t(`portfolio.filters.${key}`) as string) || key;
-    return `${baseLabel} (${getFilterCount(key)})`;
+  const getFilterLabel = (filter: typeof filters[number]) => {
+    const base = language === 'fr' ? filter.labelFr : filter.labelEn;
+    return `${base} (${getFilterCount(filter.key)})`;
   };
 
   return (
@@ -117,7 +128,7 @@ export function Portfolio() {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
             >
-              {getFilterLabel(filter.key)}
+              {getFilterLabel(filter)}
             </motion.button>
           ))}
         </motion.div>

@@ -7,13 +7,9 @@ import { toggleSound, getSoundStatus, playClick } from '../lib/soundFx';
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const navLinks = [
-  { label: 'nav.home', href: '#hero' },
-  { label: 'nav.showcase3d', href: '#showcase3d' },
-  { label: 'nav.skills', href: '#skills' },
   { label: 'nav.portfolio', href: '#portfolio' },
   { label: 'nav.dossiers', href: '#dossiers' },
-  { label: 'nav.niches', href: '#niches' },
-  { label: 'nav.simulator', href: '#simulator' },
+  { label: 'nav.skills', href: '#skills' },
   { label: 'nav.contact', href: '#contact' },
 ];
 

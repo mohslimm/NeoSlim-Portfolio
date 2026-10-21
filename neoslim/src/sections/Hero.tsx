@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useI18n } from '../contexts/I18nContext';
-import { ArrowDown, Sparkles, Globe, ChevronRight, Rotate3d, FileText } from 'lucide-react';
+import { ArrowDown, Sparkles, Globe, ChevronRight, FileText } from 'lucide-react';
 import { FluidAmbience } from '../components/FluidAmbience';
 import { ScrambleText } from '../components/ScrambleText';
 
@@ -172,62 +172,49 @@ export function Hero() {
         {/* CTA Buttons */}
         <motion.div
           variants={itemVariants}
-          className="flex flex-wrap items-center justify-center gap-4"
+          className="flex flex-wrap items-center justify-center gap-4 mb-12"
         >
           <motion.a
-            href="#showcase3d"
-            className="group relative px-6 py-3.5 rounded-full font-semibold flex items-center gap-2.5 overflow-hidden bg-gradient-to-r from-[#B8924A] via-[#c5a059] to-[#D4B57A] text-[#1A1200] shadow-[0_0_30px_rgba(197,160,89,0.35)]"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+            href="#portfolio"
+            className="group relative px-8 py-4 rounded-full font-semibold flex items-center gap-3 overflow-hidden bg-gradient-to-r from-[#B8924A] via-[#c5a059] to-[#D4B57A] text-[#1A1200] shadow-[0_0_35px_rgba(197,160,89,0.35)]"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
           >
-            <Rotate3d className="w-4 h-4 text-[#1A1200]" />
-            <span className="text-sm font-mono tracking-wider">
-              {language === 'fr' ? 'Matrice 3D' : '3D Matrix'}
+            <Sparkles className="w-4 h-4 text-[#1A1200]" />
+            <span className="text-sm font-mono tracking-wider font-bold">
+              {language === 'fr' ? 'Explorer les Réalisations' : 'Explore Projects'}
             </span>
             <ChevronRight className="w-4 h-4 text-[#1A1200] group-hover:translate-x-1 transition-transform" />
           </motion.a>
 
           <motion.a
-            href="#portfolio"
-            className="px-6 py-3.5 rounded-full bg-[#0a0a14] border border-[#c5a059]/40 hover:border-[#c5a059] text-[#f0ede8] text-sm font-mono tracking-wider flex items-center gap-2 transition-all hover:bg-[#c5a059]/10"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            <Sparkles className="w-4 h-4 text-[#c5a059]" />
-            <span>{t('hero.ctaPrimary') as string}</span>
-          </motion.a>
-
-          <motion.a
             href="#dossiers"
-            className="px-6 py-3.5 rounded-full bg-[#0f0f20] border border-white/[0.08] hover:border-[#c5a059]/50 text-[#e8c77a] text-sm font-mono tracking-wider flex items-center gap-2 transition-all"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+            className="px-7 py-4 rounded-full bg-[#0f0f20]/90 border border-[#c5a059]/40 hover:border-[#c5a059] text-[#e8c77a] text-sm font-mono tracking-wider flex items-center gap-2.5 transition-all hover:bg-[#c5a059]/10 shadow-lg"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
           >
             <FileText className="w-4 h-4 text-[#c5a059]" />
             <span>{language === 'fr' ? '30 Dossiers Word' : '30 Word Dossiers'}</span>
           </motion.a>
         </motion.div>
-      </motion.div>
 
-      {/* Side Stats HUD (Left) */}
-      <motion.div
-        className="absolute left-8 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 p-4 rounded-2xl bg-[#0a0a14]/60 border border-white/[0.06] backdrop-blur-md"
-        initial={{ opacity: 0, x: -40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 1.4, duration: 0.9, ease: easeAntigravity }}
-        aria-hidden="true"
-      >
-        {[
-          { value: '30', label: language === 'fr' ? 'Systèmes Déployés' : 'Deployed Systems' },
-          { value: '0.74ms', label: 'MT5 IPC Bridge' },
-          { value: '58', label: 'Wilayas COD Radar' },
-          { value: '99/100', label: 'Antigravity Score' },
-        ].map((stat, index) => (
-          <div key={index} className="text-left font-mono">
-            <p className="text-xl font-bold text-[#c5a059] tabular-nums tracking-tight">{stat.value}</p>
-            <p className="text-[10px] text-[#f0ede8]/50 uppercase tracking-widest mt-0.5">{stat.label}</p>
-          </div>
-        ))}
+        {/* Minimalist Centered Metrics Strip */}
+        <motion.div
+          variants={itemVariants}
+          className="inline-flex flex-wrap items-center justify-center gap-6 sm:gap-12 py-3 px-8 rounded-full bg-[#0a0a14]/80 border border-white/[0.08] backdrop-blur-md"
+        >
+          {[
+            { value: '30', label: language === 'fr' ? 'Systèmes Déployés' : 'Deployed Systems' },
+            { value: '0.74ms', label: 'MT5 IPC Bridge' },
+            { value: '58', label: 'Wilayas COD Radar' },
+          ].map((stat, index) => (
+            <div key={index} className="flex items-center gap-3 font-mono">
+              <span className="text-lg sm:text-xl font-bold text-[#c5a059] tabular-nums tracking-tight">{stat.value}</span>
+              <span className="text-[11px] text-[#f0ede8]/60 uppercase tracking-wider">{stat.label}</span>
+              {index < 2 && <span className="hidden sm:inline text-white/10 ml-3">|</span>}
+            </div>
+          ))}
+        </motion.div>
       </motion.div>
 
       {/* Scroll Indicator */}

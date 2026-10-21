@@ -6,13 +6,9 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useLenis } from './hooks/useLenis';
 import { Navigation } from './sections/Navigation';
 import { Hero } from './sections/Hero';
-import { ProjectCubeShowcase } from './sections/ProjectCubeShowcase';
 import { Skills } from './sections/Skills';
-import { DataViz } from './sections/DataViz';
 import { Portfolio } from './sections/Portfolio';
 import { TechnicalDossiersVault } from './sections/TechnicalDossiersVault';
-import { NichePackShowcase } from './sections/NichePackShowcase';
-import { ArchitectureSimulator } from './sections/ArchitectureSimulator';
 import { Footer } from './sections/Footer';
 import { ClientMarquee } from './components/ClientMarquee';
 import { SpotlightAura } from './components/SpotlightAura';
@@ -140,20 +136,16 @@ function CustomCursor() {
   );
 }
 
-// Main Page Component
+// Main Page Component — Streamlined Sovereign Architecture
 function MainPage() {
   return (
     <main id="main" tabIndex={-1} className="relative w-full overflow-x-hidden bg-[#060610] focus:outline-none">
       <Navigation />
       <Hero />
       <ClientMarquee />
-      <ProjectCubeShowcase />
-      <Skills />
-      <DataViz />
       <Portfolio />
       <TechnicalDossiersVault />
-      <NichePackShowcase />
-      <ArchitectureSimulator />
+      <Skills />
       <Footer />
     </main>
   );
