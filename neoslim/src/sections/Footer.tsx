@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useI18n } from '../contexts/I18nContext';
 import { Github, Linkedin, Twitter, Mail, ArrowUpRight, Heart, Lock } from 'lucide-react';
+import { SovereignBrandMark } from '../components/SovereignBrandMark';
 
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -107,12 +108,8 @@ export function Footer() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <img src="./logo.png" alt="NeoSlim Logo" className="h-12 w-auto object-contain" />
-                  <div>
-                    <span className="font-serif text-lg font-bold text-[#f0ede8] block">MOHAMED SLIMANI</span>
-                    <span className="font-mono text-[9px] text-[#c5a059] tracking-widest uppercase">Stepping Stones Agency</span>
-                  </div>
+                <div className="mb-5">
+                  <SovereignBrandMark size="lg" />
                 </div>
                 <p className="text-[#f0ede8]/60 text-xs leading-relaxed mb-6 font-light max-w-sm">
                   Senior Full-Stack Architect & Founder de Stepping Stones Agency. Spécialisé en systèmes critiques MERN / Next.js, sécurité défensive et design Quiet Luxury.

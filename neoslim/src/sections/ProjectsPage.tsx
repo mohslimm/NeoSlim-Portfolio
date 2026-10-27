@@ -6,6 +6,7 @@ import { useI18n } from '../contexts/I18nContext';
 import { useProjectStore } from '../stores/useProjectStore';
 import type { ProjectCategory } from '../data/projectsData';
 import { playClick, playChime, playSubtleThud } from '../lib/soundFx';
+import { SovereignBrandMark } from '../components/SovereignBrandMark';
 
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -172,12 +173,8 @@ export function ProjectsPage() {
           </Link>
 
           <div className="flex items-center gap-4">
-            <Link to="/" onClick={playClick} className="flex items-center group">
-              <motion.img
-                src="./logo.png"
-                alt="NeoSlim Logo"
-                className="h-12 w-auto object-contain transition-transform group-hover:rotate-12 duration-500"
-              />
+            <Link to="/" onClick={playClick} className="flex items-center group py-0.5" aria-label="Accueil">
+              <SovereignBrandMark size="sm" />
             </Link>
 
             <motion.button

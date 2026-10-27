@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from '../contexts/I18nContext';
 import { Menu, X, Globe, Volume2, VolumeX } from 'lucide-react';
 import { toggleSound, getSoundStatus, playClick } from '../lib/soundFx';
+import { SovereignBrandMark } from '../components/SovereignBrandMark';
 
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -45,24 +46,12 @@ export function Navigation() {
             {/* Logo */}
             <motion.a
               href="#hero"
-              className="flex items-center gap-3 group"
-              whileHover={{ scale: 1.03 }}
+              className="flex items-center group py-0.5"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              aria-label="Mohamed Slimani — Stepping Stones Agency"
             >
-              <div className="relative">
-                <img
-                  src="./logo.png"
-                  alt="NeoSlim Logo"
-                  className="h-10 md:h-12 w-auto object-contain transition-transform duration-500 group-hover:rotate-12"
-                />
-              </div>
-              <div className="hidden sm:flex flex-col text-left">
-                <span className="font-serif text-sm font-bold tracking-wider text-[#f0ede8] group-hover:text-[#c5a059] transition-colors">
-                  MOHAMED SLIMANI
-                </span>
-                <span className="font-mono text-[9px] text-[#c5a059] tracking-widest uppercase">
-                  Stepping Stones
-                </span>
-              </div>
+              <SovereignBrandMark size="md" />
             </motion.a>
 
             {/* Desktop Navigation */}
