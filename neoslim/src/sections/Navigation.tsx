@@ -8,7 +8,9 @@ import { SovereignBrandMark } from '../components/SovereignBrandMark';
 const easeAntigravity: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const navLinks = [
+  { label: 'nav.offers', href: '#offres' },
   { label: 'nav.portfolio', href: '#portfolio' },
+  { label: 'nav.simulator', href: '#simulator' },
   { label: 'nav.dossiers', href: '#dossiers' },
   { label: 'nav.skills', href: '#skills' },
   { label: 'nav.contact', href: '#contact' },

@@ -6,6 +6,9 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useLenis } from './hooks/useLenis';
 import { Navigation } from './sections/Navigation';
 import { Hero } from './sections/Hero';
+import { MonetizedOffers } from './sections/MonetizedOffers';
+import { NichePackShowcase } from './sections/NichePackShowcase';
+import { ArchitectureSimulator } from './sections/ArchitectureSimulator';
 import { Skills } from './sections/Skills';
 import { Portfolio } from './sections/Portfolio';
 import { TechnicalDossiersVault } from './sections/TechnicalDossiersVault';
@@ -143,7 +146,10 @@ function MainPage() {
       <Navigation />
       <Hero />
       <ClientMarquee />
+      <MonetizedOffers />
       <Portfolio />
+      <NichePackShowcase />
+      <ArchitectureSimulator />
       <TechnicalDossiersVault />
       <Skills />
       <Footer />
